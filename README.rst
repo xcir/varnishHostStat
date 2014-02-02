@@ -16,6 +16,12 @@ DESCRIPTION
 ===========
 Display to the status by host-group or url-pattern
 
+ATTENTION
+===========
+This script use to high cpu power.
+Is half cpu usage as compared with the varnishd in my environment.
+
+
 SAMPLE
 ===========
 Group by host (varnishhoststat.py -i 5)
