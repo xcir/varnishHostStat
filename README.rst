@@ -4,7 +4,7 @@ varnishhoststat
 
 
 -----------------------------------------------------------
-Display to the statistics by host-group or url-pattern
+Display to the Statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
@@ -14,7 +14,7 @@ Display to the statistics by host-group or url-pattern
 
 DESCRIPTION
 ===========
-Display to the statistics by host-group or url-pattern
+Display to the Statistics for each domain or url-pattern
 
 ATTENTION
 ===========
