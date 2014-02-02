@@ -4,7 +4,7 @@ varnishhoststat
 
 
 -----------------------------------------------------------
-Display to the status by host-group or url-pattern
+Display to the statistics by host-group or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
@@ -14,7 +14,7 @@ Display to the status by host-group or url-pattern
 
 DESCRIPTION
 ===========
-Display to the status by host-group or url-pattern
+Display to the statistics by host-group or url-pattern
 
 ATTENTION
 ===========
@@ -70,7 +70,8 @@ OPTION
   
 -i [interval]
 ----------------
-Specify interval second
+Specify interval second.
+Default is 10 second.
 
 example
 #########
@@ -81,7 +82,8 @@ example
 
 -F [host@url-pattern]
 --------------------------------
-Specify filter pattern
+Specify filter pattern.
+Statistics for each domain separately ,if you do not  specified.
 
 example
 #########
