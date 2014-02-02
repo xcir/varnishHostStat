@@ -53,8 +53,8 @@ OUTPUT FORMAT
   
   * hit rate
     Decision as follows:
-    use fetch     = Miss
-    not use fetch = Hit
+    Fetch to backend = Miss
+    Not fetch        = Hit
 
 OPTION
 ===========
