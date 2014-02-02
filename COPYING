@@ -1,0 +1,5 @@
+varnishhoststat, Display to the statistics for each domain or url-pattern:
+Copyright (c) 2014 Shohei Tanaka(@xcir)
+
+python-varnishapi, Connect to libvarnish api by ctypes:
+Copyright (c) 2013 Shohei Tanaka(@xcir)
