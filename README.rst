@@ -1,6 +1,6 @@
-==============
+================
 varnishhoststat
-==============
+================
 
 
 -----------------------------------------------------------
@@ -50,22 +50,24 @@ OPTION
   -i [interval] -F [filter pattern]
   
 -i [interval]
-****************
+----------------
 Specify interval second
 
 example
-^^^^^^^^
+#########
 ::
+
   #10 second
   -i 10
 
 -F [host@url-pattern]
-*********************
+--------------------------------
 Specify filter pattern
 
 example
-^^^^^^^^
+#########
 ::
+
   #Filter by example.net (ends-with match)
   #This pattern is match to a.example.net and b.example.net and example.net
   -F example.net
