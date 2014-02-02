@@ -42,6 +42,19 @@ Group by url-pattern (varnishhoststat.py -i 5 -F "example.net@^/img/" -F "exampl
   [F2]example.net@^/css/                             | 0.000894    | 0.400000    | 100.000000  | 0.000112    | 0.000112    | 0.000000    | 0.286133    | 0.000000    | 0.000000    | 0.400000    | 0.000000
   [F3]example.net                                    | 0.000015    | 0.400000    | 0.000000    | 0.001053    | 0.000000    | 0.001053    | 0.004883    | 0.400000    | 0.000000    | 0.000000    | 0.000000
 
+OUTPUT FORMAT
+==============
+::
+
+  date: [time] interval: [interval time]
+  Host                    | Mbps                 | rps             | hit      | time/req              | (H)time/req                             | (M)time/req                            | KB/req                     | 2xx/s                 | 3xx/s                 | 4xx/s                 | 5xx/s
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Host or filter rule     | Traffic (w/o header) | Request Per Sec | Hit per  | Average response time | Average response time by hit request    |  Average response time by miss request | average response body size | HTTP status 2xx rate  | HTTP status 3xx rate  | HTTP status 4xx rate  | HTTP status 5xx rate
+  
+  * hit rate
+    Decision as follows:
+    use fetch     = Miss
+    not use fetch = Hit
 
 OPTION
 ===========
