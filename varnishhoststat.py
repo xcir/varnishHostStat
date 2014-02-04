@@ -8,23 +8,18 @@ def main():
 
 class varnishHostStat:
 	def __init__(self):
-		#connect varnishapi
-		self.vap     = varnishapi.VarnishAPI(['-c', '-i', 'Length,RxHeader,RxUrl,TxStatus,ReqEnd,ReqStart,VCL_Call', '-I', '^([0-9]+$|Host:|/|[0-9\. ]+$|[a-z]+$)'])
-
 		#utils
 		#buf -> trx 
 		self.buf       = {}
 		self.trx       = [{}]
-		self.time      = int(time.time())
-		self.vslutil   = varnishapi.VSLUtil()
 		self.thr       = 10
 		self.filter    = False
 		self.mode_raw  = False
 		self.o_json    = False
-
+		self.start     = False
 		#opt
 		try:
-			opts,args = getopt.getopt(sys.argv[1:],"jrF:i:")
+			opts,args = getopt.getopt(sys.argv[1:],"jrF:i:",["start="])
 		except getopt.GetoptError:
 			print 'param err'
 			sys.exit(2)
@@ -35,6 +30,14 @@ class varnishHostStat:
 				self.mode_raw = True
 			elif o == '-j':
 				self.o_json = True
+			elif o == '--start':
+				self.start = int(a)
+				ns         = datetime.datetime.today().second
+				if self.start > ns:
+					wait   = self.start - ns
+				else:
+					wait   = 60 - ns + self.start
+				time.sleep(wait)
 			elif o == '-F':
 				spl = a.split('@' ,2)
 				tmp = [a, spl[0]]
@@ -46,6 +49,9 @@ class varnishHostStat:
 					self.filter = []
 				self.filter.append(tmp)
 
+		self.time    = int(time.time())
+		self.vap     = varnishapi.VarnishAPI(['-c', '-i', 'Length,RxHeader,RxUrl,TxStatus,ReqEnd,ReqStart,VCL_Call', '-I', '^([0-9]+$|Host:|/|[0-9\. ]+$|[a-z]+$)'])
+		self.vslutil = varnishapi.VSLUtil()
 	
 
 	def execute(self):
@@ -201,8 +207,8 @@ class varnishHostStat:
 					else:
 						self.trx[delta][host]['no_fetch_time'] += self.buf[nfd]['worktime']
 
-			else:
-				print 'delay:'
+			#else:
+			#	print 'delay:'
 			del self.buf[nfd]
 		elif nfd in self.buf:
 			if ntag == 'Length':
