@@ -59,12 +59,12 @@ class varnishHostStat:
 			time.sleep(0.1)
 
 	def makeCmpData(self):
-		now = int(time.time())
-		#if now - self.time >= self.thr:
-		if len(self.trx) > self.thr:
+		now   = int(time.time())
+		delta = int((now - self.time)/self.thr)
+		if delta >= 1:
 			tmp   = {}
 			total = {}
-			while len(self.trx) > 1:
+			while len(self.trx) > 0:
 				pl = self.trx.pop(0)
 				for host,v in pl.items():
 					if host not in tmp:
@@ -79,7 +79,8 @@ class varnishHostStat:
 			otime     = self.time
 			self.time = now
 			if len(total) == 0:
-				return False
+				return {'@start-time':otime, '@end-time':now -1}
+				#return False
 			tmp['#alldata']    = total
 			tmp['@start-time'] = otime
 			tmp['@end-time']   = now -1
@@ -91,33 +92,36 @@ class varnishHostStat:
 				tmp[host]['mbps']    = float(v['totallen'])     / self.thr  * 8 / 1024 / 1024
 				tmp[host]['rps']     = float(v['req'])          / self.thr
 				if v['req'] > 0:
-					tmp[host]['hit']     = (1 - float(v['fetch'])   / v['req']) * 100
-					tmp[host]['avg_fsize']     = float(v['totallen'])     / v['req']  / 1024
-					tmp[host]['avg_time']   = (float(v['no_fetch_time']) + v['fetch_time']) / v['req']
+					tmp[host]['hit']                = (1 - float(v['fetch'])   / v['req']) * 100
+					tmp[host]['avg_fsize']          = float(v['totallen'])     / v['req']  / 1024
+					tmp[host]['avg_time']           = (float(v['no_fetch_time']) + v['fetch_time']) / v['req']
 				else:
-					tmp[host]['hit']     = 0.0
-					tmp[host]['avg_fsize']     = 0.0
-					tmp[host]['avg_time']     = 0.0
+					tmp[host]['hit']                = 0.0
+					tmp[host]['avg_fsize']          = 0.0
+					tmp[host]['avg_time']           = 0.0
 				if v['req'] - v['fetch'] > 0:
 					tmp[host]['avg_not_fetch_time'] = float(v['no_fetch_time']) / (v['req'] - v['fetch'])
 				else:
 					tmp[host]['avg_not_fetch_time'] = 0.0
 				if v['fetch'] > 0:
-					tmp[host]['avg_fetch_time']  = float(v['fetch_time'])   / v['fetch']
+					tmp[host]['avg_fetch_time']     = float(v['fetch_time'])   / v['fetch']
 				else:
-					tmp[host]['avg_fetch_time']  = 0.0
+					tmp[host]['avg_fetch_time']     = 0.0
 				tmp[host]['avg_2xx']    = float(v['2xx'])          / self.thr
 				tmp[host]['avg_3xx']    = float(v['3xx'])          / self.thr
 				tmp[host]['avg_4xx']    = float(v['4xx'])          / self.thr
 				tmp[host]['avg_5xx']    = float(v['5xx'])          / self.thr
 			return tmp
+		else:
+			while len(self.trx) -1 < delta:
+				self.trx.append({})
+			
 
 	def printCmp(self,cmp):
 		if self.o_json:
 			print json.dumps(cmp)
 		else:
 			os.system('clear')
-			#print time.strftime("date: %Y/%m/%d %H:%M:%S interval: " + str(self.thr))
 			print str(datetime.datetime.fromtimestamp(cmp['@start-time'])) + ' - ' + str(datetime.datetime.fromtimestamp(cmp['@end-time'])) + ' (interval:'+ str(self.thr) +')'
 			if self.mode_raw:
 				print "%-50s | %-11s | %-11s | %-11s | %-13s | %-11s | %-11s | %-11s | %-11s | %-11s |" % ("Host", "req", "fetch", "fetch_time","no_fetch_time","totallen", "2xx","3xx", "4xx", "5xx")
@@ -168,7 +172,7 @@ class varnishHostStat:
 			spl = nmsg.split(' ',4)
 			self.buf[nfd]['worktime']   = float(spl[2]) - float(spl[1])
 			self.buf[nfd]['time']       = int(float(spl[2])) #EndTime
-			delta                       = self.buf[nfd]['time'] - self.time
+			delta                       = int((self.buf[nfd]['time'] - self.time) / self.thr)
 			
 
 			if delta >= 0:
@@ -216,4 +220,5 @@ class varnishHostStat:
 
 
 main()
+
 
