@@ -16,7 +16,6 @@ class varnishHostStat:
 		self.filter    = False
 		self.mode_raw  = False
 		self.o_json    = False
-		self.start     = False
 		#opt
 		try:
 			opts,args = getopt.getopt(sys.argv[1:],"jrF:i:",["start="])
@@ -31,12 +30,12 @@ class varnishHostStat:
 			elif o == '-j':
 				self.o_json = True
 			elif o == '--start':
-				self.start = int(a)
+				start      = int(a)
 				ns         = datetime.datetime.today().second
-				if self.start > ns:
-					wait   = self.start - ns
+				if start > ns:
+					wait   = start - ns
 				else:
-					wait   = 60 - ns + self.start
+					wait   = 60 - ns + start
 				time.sleep(wait)
 			elif o == '-F':
 				spl = a.split('@' ,2)
