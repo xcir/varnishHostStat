@@ -8,8 +8,8 @@ Display to the Statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-02-03
-:Version: 0.2
+:Date: 2014-02-04
+:Version: 0.3
 :Manual section: 1
 
 DESCRIPTION
@@ -99,7 +99,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -F [filter pattern]
+  -r -j -i [interval] -F [filter pattern] --start [second]
   
 -r
 ----------------
@@ -145,9 +145,14 @@ example
   #Not match to example.net@^/img/[0-9]
   -F example.net -F "example.net@^/img/[0-9]" 
 
+--start [second]
+------------------
+Fix starting time.
 
 HISTORY
 ===========
+
+Version 0.3: Support --start option, Bugfix
 
 Version 0.2: Support -r -j option
 
