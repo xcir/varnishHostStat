@@ -8,8 +8,8 @@ Display to the Statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-02-04
-:Version: 0.3
+:Date: 2014-02-05
+:Version: 0.4
 :Manual section: 1
 
 DESCRIPTION
@@ -99,7 +99,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -F [filter pattern] --start [second]
+  -r -j -i [interval] -F [filter pattern] --start [second] -f [file-name]
   
 -r
 ----------------
@@ -126,6 +126,11 @@ example
 Specify filter pattern.
 Statistics for each domain separately ,if you do not  specified.
 
+-w [file-name]
+--------------------------------
+Specify write log file-name.
+Move log file ,if you want rotation. (Don't send HUP)
+
 example
 #########
 ::
@@ -151,6 +156,8 @@ Fix starting time.
 
 HISTORY
 ===========
+
+Version 0.4: Support -w option
 
 Version 0.3: Support --start option, Bugfix
 

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import varnishapi,time,datetime,os,sys,getopt,re,json
+import logging,logging.handlers
 
 def main():
 	smp = varnishHostStat()
@@ -16,15 +17,23 @@ class varnishHostStat:
 		self.filter    = False
 		self.mode_raw  = False
 		self.o_json    = False
+		self.log       = False
 		#opt
 		try:
-			opts,args = getopt.getopt(sys.argv[1:],"jrF:i:",["start="])
+			opts,args = getopt.getopt(sys.argv[1:],"jrF:i:w:",["start="])
 		except getopt.GetoptError:
 			print 'param err'
 			sys.exit(2)
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
 				self.thr = int(a)
+			elif o == '-w':
+				lg = logging.handlers.WatchedFileHandler(a)
+				lg.setLevel(logging.INFO)
+				lg.setFormatter(logging.Formatter("%(message)s"))
+				self.log = logging.getLogger()
+				self.log.addHandler(lg)
+				self.log.setLevel(logging.INFO)
 			elif o == '-r':
 				self.mode_raw = True
 			elif o == '-j':
@@ -59,7 +68,8 @@ class varnishHostStat:
 			self.vap.VSL_NonBlockingDispatch(self.vapCallBack)
 			cmp = self.makeCmpData()
 			if cmp:
-				self.printCmp(cmp)
+				txt = self.txtCmp(cmp)
+				self.outTxt(txt)
 
 			time.sleep(0.1)
 
@@ -121,30 +131,37 @@ class varnishHostStat:
 			while len(self.trx) -1 < delta:
 				self.trx.append({})
 			
-
-	def printCmp(self,cmp):
-		if self.o_json:
-			print json.dumps(cmp)
+	def outTxt(self,txt):
+		if self.log:
+			self.log.info(txt)
 		else:
 			os.system('clear')
-			print str(datetime.datetime.fromtimestamp(cmp['@start-time'])) + ' - ' + str(datetime.datetime.fromtimestamp(cmp['@end-time'])) + ' (interval:'+ str(self.thr) +')'
-			if self.mode_raw:
-				print "%-50s | %-11s | %-11s | %-11s | %-13s | %-11s | %-11s | %-11s | %-11s | %-11s |" % ("Host", "req", "fetch", "fetch_time","no_fetch_time","totallen", "2xx","3xx", "4xx", "5xx")
-				print '-' * 179 + '|'
-				for host in sorted(cmp.keys()):
-					if host[0] == '@':
-						continue
-					v = cmp[host]
-					print "%-50s | %11d | %11d | %11f | %13f | %11d | %11d | %11d | %11d | %11d |" % (host, v['req'], v['fetch'], v['fetch_time'],v['no_fetch_time'], v['totallen'], v['2xx'], v['3xx'], v['4xx'], v['5xx'] )
-			else:
-				print "%-50s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |" % ("Host", "Mbps", "rps", "hit", "time/req","(H)time/req", "(M)time/req", "KB/req", "2xx/s", "3xx/s", "4xx/s", "5xx/s")
-				print '-' * 205 + '|'
-				for host in sorted(cmp.keys()):
-					if host[0] == '@':
-						continue
-					v = cmp[host]
-					print "%-50s | %-11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f |" % (host, v['mbps'], v['rps'], v['hit'], v['avg_time'], v['avg_not_fetch_time'], v['avg_fetch_time'], v['avg_fsize'], v['avg_2xx'], v['avg_3xx'], v['avg_4xx'], v['avg_5xx'])
+			print txt,
 
+	def txtCmp(self,cmp):
+		if self.o_json:
+			return json.dumps(cmp)
+		else:
+			ret = ''
+			#os.system('clear')
+			ret+= str(datetime.datetime.fromtimestamp(cmp['@start-time'])) + ' - ' + str(datetime.datetime.fromtimestamp(cmp['@end-time'])) + ' (interval:'+ str(self.thr) +')' + "\n"
+			if self.mode_raw:
+				ret+= "%-50s | %-11s | %-11s | %-11s | %-13s | %-11s | %-11s | %-11s | %-11s | %-11s |\n" % ("Host", "req", "fetch", "fetch_time","no_fetch_time","totallen", "2xx","3xx", "4xx", "5xx")
+				ret+= '-' * 179 + "|\n"
+				for host in sorted(cmp.keys()):
+					if host[0] == '@':
+						continue
+					v = cmp[host]
+					ret+= "%-50s | %11d | %11d | %11f | %13f | %11d | %11d | %11d | %11d | %11d |\n" % (host, v['req'], v['fetch'], v['fetch_time'],v['no_fetch_time'], v['totallen'], v['2xx'], v['3xx'], v['4xx'], v['5xx'] )
+			else:
+				ret+= "%-50s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n" % ("Host", "Mbps", "rps", "hit", "time/req","(H)time/req", "(M)time/req", "KB/req", "2xx/s", "3xx/s", "4xx/s", "5xx/s")
+				ret+= '-' * 205 + "|\n"
+				for host in sorted(cmp.keys()):
+					if host[0] == '@':
+						continue
+					v = cmp[host]
+					ret+= "%-50s | %-11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f |\n" % (host, v['mbps'], v['rps'], v['hit'], v['avg_time'], v['avg_not_fetch_time'], v['avg_fetch_time'], v['avg_fsize'], v['avg_2xx'], v['avg_3xx'], v['avg_4xx'], v['avg_5xx'])
+			return ret
 			
 
 
@@ -222,8 +239,7 @@ class varnishHostStat:
 				self.buf[nfd]['fetch']  = 1 
 
 
-
-
 main()
+
 
 
