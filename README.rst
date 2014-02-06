@@ -99,7 +99,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -F [filter pattern] --start [second] -w [file-name]
+  -r -j -i [interval] -F [filter pattern] --start [second] -w [file-name] -D -P [pid-file]
   
 -r
 ----------------
