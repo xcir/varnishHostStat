@@ -8,8 +8,8 @@ Display to the Statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-02-05
-:Version: 0.4
+:Date: 2014-02-06
+:Version: 0.5
 :Manual section: 1
 
 DESCRIPTION
@@ -121,15 +121,18 @@ example
   #10 second
   -i 10
 
+-D
+------------------
+Daemonize.
+
+-P [pid-file]
+------------------
+Write the process's PID to the specified file.(require -D option)
+
 -F [host@url-pattern]
 --------------------------------
 Specify filter pattern.
 Statistics for each domain separately ,if you do not  specified.
-
--w [file-name]
---------------------------------
-Specify write log file-name.
-Move log file ,if you want rotation. (Don't send HUP)
 
 example
 #########
@@ -150,12 +153,19 @@ example
   #Not match to example.net@^/img/[0-9]
   -F example.net -F "example.net@^/img/[0-9]" 
 
+-w [file-name]
+--------------------------------
+Specify write log file-name.
+Move log file ,if you want rotation. (Don't send HUP)
+
 --start [second]
 ------------------
 Fix starting time.
 
 HISTORY
 ===========
+
+Version 0.5: Support -D -P option
 
 Version 0.4: Support -w option
 
