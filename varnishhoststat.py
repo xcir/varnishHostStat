@@ -3,8 +3,8 @@ import varnishhoststatcore,getopt,os,sys,syslog,traceback
 #based on Jurgen Hermanns http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
 
 def main(opts):
-	vhs = varnishhoststatcore.varnishHostStat(opts)
 	try:
+		vhs = varnishhoststatcore.varnishHostStat(opts)
 		vhs.execute()
 	except KeyboardInterrupt:
 		pass
