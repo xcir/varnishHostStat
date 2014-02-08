@@ -164,7 +164,7 @@ class varnishHostStat:
 			return dat['Host']
 		i = 0
 		for v in self.filter:
-			i += 1
+			i   += 1
 			host = v[1]
 			reg  = v[2]
 			if dat['Host'].endswith(host) and (not reg or reg.match(dat['url'])):
@@ -175,62 +175,75 @@ class varnishHostStat:
 		if spec == 0:
 			return
 
-		nml = self.vap.normalizeDic(priv, tag, fd, length, spec, ptr, bm)
+		nml  = self.vap.normalizeDic(priv, tag, fd, length, spec, ptr, bm)
 		ntag = nml['tag']
 		nfd  = str(nml['fd'])
 		nmsg = nml['msg']
 
 		if   ntag == 'ReqStart':
 			self.buf[nfd] = {'Host':'#n/a', 'Length':0,'url':'','status':0,'fetch':0,'time':0.0,'worktime':0.0}
-		elif ntag == 'ReqEnd':
-			spl = nmsg.split(' ',4)
-			self.buf[nfd]['worktime']   = float(spl[2]) - float(spl[1])
-			self.buf[nfd]['time']       = int(float(spl[2])) #EndTime
-			delta                       = int((self.buf[nfd]['time'] - self.time) / self.thr)
-			
-
-			if delta >= 0:
-				host = self.chkFilter(self.buf[nfd])
-				if host:
-					while len(self.trx) -1 < delta:
-						self.trx.append({})
-					#host = self.buf[nfd]['Host']
-					if host not in self.trx[delta]:
-						self.trx[delta][host] = {'req':0, 'fetch':0, 'fetch_time':0.0,'no_fetch_time':0, 'totallen':0,'2xx':0,'3xx':0,'4xx':0,'5xx':0}
-
-					self.trx[delta][host]['req']          += 1
-					self.trx[delta][host]['totallen']     += self.buf[nfd]['Length']
-
-					status = self.buf[nfd]['status']
-					if   status >= 200 and status < 300:
-						self.trx[delta][host]['2xx'] += 1
-					elif status >= 300 and status < 400:
-						self.trx[delta][host]['3xx'] += 1
-					elif status >= 400 and status < 500:
-						self.trx[delta][host]['4xx'] += 1
-					elif status >= 500 and status < 600:
-						self.trx[delta][host]['5xx'] += 1
-
-					if self.buf[nfd]['fetch']:
-						self.trx[delta][host]['fetch_time']    += self.buf[nfd]['worktime']
-						self.trx[delta][host]['fetch']         += 1
-					else:
-						self.trx[delta][host]['no_fetch_time'] += self.buf[nfd]['worktime']
-
-			#else:
-			#	print 'delay:'
-			del self.buf[nfd]
 		elif nfd in self.buf:
-			if ntag == 'Length':
+			if ntag == 'VCL_call':
+				if nmsg == 'fetch':
+					self.buf[nfd]['fetch']  = 1 
+			elif ntag == 'Length':
 				self.buf[nfd]['Length'] = int(nmsg)
-			elif ntag == 'RxHeader':
-				self.buf[nfd]['Host']   = nmsg.split(':', 2)[1].strip()
 			elif ntag == 'RxURL':
 				self.buf[nfd]['url']    = nmsg
 			elif ntag == 'TxStatus':
 				self.buf[nfd]['status'] = int(nmsg)
-			elif ntag == 'VCL_call' and nmsg == 'fetch':
-				self.buf[nfd]['fetch']  = 1 
+			elif ntag == 'ReqEnd':
+				spl = nmsg.split(' ',4)
+				self.buf[nfd]['worktime']   = float(spl[2]) - float(spl[1])
+				self.buf[nfd]['time']       = int(float(spl[2])) #EndTime
+				delta                       = int((self.buf[nfd]['time'] - self.time) / self.thr)
+				
+
+				if delta >= 0:
+					host = self.chkFilter(self.buf[nfd])
+					if host:
+						while len(self.trx) -1 < delta:
+							self.trx.append({})
+						#host = self.buf[nfd]['Host']
+						if host not in self.trx[delta]:
+							self.trx[delta][host] = {'req':0, 'fetch':0, 'fetch_time':0.0,'no_fetch_time':0, 'totallen':0,'2xx':0,'3xx':0,'4xx':0,'5xx':0}
+
+						self.trx[delta][host]['req']          += 1
+						self.trx[delta][host]['totallen']     += self.buf[nfd]['Length']
+
+						status = self.buf[nfd]['status']
+						
+						if status >= 200:
+							if   status < 300:
+								self.trx[delta][host]['2xx'] += 1
+							elif status < 400:
+								self.trx[delta][host]['3xx'] += 1
+							elif status < 500:
+								self.trx[delta][host]['4xx'] += 1
+							elif status < 600:
+								self.trx[delta][host]['5xx'] += 1
+						'''
+						if   status >= 200 and status < 300:
+							self.trx[delta][host]['2xx'] += 1
+						elif status >= 300 and status < 400:
+							self.trx[delta][host]['3xx'] += 1
+						elif status >= 400 and status < 500:
+							self.trx[delta][host]['4xx'] += 1
+						elif status >= 500 and status < 600:
+							self.trx[delta][host]['5xx'] += 1
+						'''
+
+						if self.buf[nfd]['fetch']:
+							self.trx[delta][host]['fetch_time']    += self.buf[nfd]['worktime']
+							self.trx[delta][host]['fetch']         += 1
+						else:
+							self.trx[delta][host]['no_fetch_time'] += self.buf[nfd]['worktime']
+
+				#else:
+				#	print 'delay:'
+				del self.buf[nfd]
+			elif ntag == 'RxHeader':
+				self.buf[nfd]['Host']   = nmsg.split(':', 2)[1].strip()
 
 
 
