@@ -1,10 +1,16 @@
 #!/usr/bin/python
-import varnishhoststatcore,getopt,os,sys
+import varnishhoststatcore,getopt,os,sys,syslog,traceback
 #based on Jurgen Hermanns http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
 
 def main(opts):
 	vhs = varnishhoststatcore.varnishHostStat(opts)
-	vhs.execute()
+	try:
+		vhs.execute()
+	except KeyboardInterrupt:
+		pass
+	except Exception as e:
+		syslog.openlog(sys.argv[0], syslog.LOG_PID|syslog.LOG_PERROR, syslog.LOG_LOCAL0)
+		syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
 
 if __name__ == '__main__':
 	try:
