@@ -4,12 +4,12 @@ varnishhoststat
 
 
 -----------------------------------------------------------
-Display to the Statistics for each domain or url-pattern
+Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-02-06
-:Version: 0.5
+:Date: 2014-02-08
+:Version: 0.6
 :Manual section: 1
 
 DESCRIPTION
@@ -153,6 +153,11 @@ example
   #Not match to example.net@^/img/[0-9]
   -F example.net -F "example.net@^/img/[0-9]" 
 
+-a
+--------------------------------
+Additional filter.
+Show to statistics for each domain and filtered statistics.
+
 -w [file-name]
 --------------------------------
 Specify write log file-name.
@@ -164,6 +169,8 @@ Fix starting time.
 
 HISTORY
 ===========
+
+Version 0.6: Support -a option
 
 Version 0.5: Support -D -P option
 

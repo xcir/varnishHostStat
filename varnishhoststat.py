@@ -8,7 +8,7 @@ def main(opts):
 
 if __name__ == '__main__':
 	try:
-		opts,args = getopt.getopt(sys.argv[1:],"jrF:i:w:DP:",["start="])
+		opts,args = getopt.getopt(sys.argv[1:],"ajrF:i:w:DP:",["start="])
 	except getopt.GetoptError:
 		print 'param err'
 		sys.exit(2)
