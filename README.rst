@@ -99,7 +99,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -a -F [filter pattern] --start [second] -w [file-name] -D -P [pid-file]
+  -r -j -i [interval] -a -F [filter pattern] --start [second] -w [file-name] -D -P [pid-file] -V
   
 -r
 ----------------
@@ -162,6 +162,10 @@ Show to statistics for each domain and filtered statistics.
 --------------------------------
 Specify write log file-name.
 Move log file ,if you want rotation. (Don't send HUP)
+
+-V
+--------------------------------
+Show version info.
 
 --start [second]
 ------------------

@@ -14,9 +14,10 @@ def main(opts):
 
 if __name__ == '__main__':
 	try:
-		opts,args = getopt.getopt(sys.argv[1:],"ajrF:i:w:DP:",["start="])
+		opts,args = getopt.getopt(sys.argv[1:],"ajrVF:i:w:DP:",["start="])
 	except getopt.GetoptError:
-		print 'param err'
+		print 'invalid option'
+		print 'usage: varnishhoststat -r -j -i [interval] -a -F [filter pattern] --start [second] -w [file-name] -D -P [pid-file] -V'
 		sys.exit(2)
 	
 	d_flag = False
@@ -26,6 +27,9 @@ if __name__ == '__main__':
 			d_flag = True
 		elif o == '-P':
 			p_file = a
+		elif o == '-V':
+			print 'varnishhoststat (v0.6)'
+			sys.exit(0)
 	if d_flag:
 		try:
 			pid = os.fork()
