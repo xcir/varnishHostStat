@@ -142,7 +142,7 @@ class varnishHostStat:
 
 	def txtCmp(self,cmp):
 		if self.o_json:
-			return json.dumps(cmp)
+			return json.dumps(cmp, ensure_ascii=False).decode('utf8','ignore')
 		else:
 			ret = ''
 			#os.system('clear')
