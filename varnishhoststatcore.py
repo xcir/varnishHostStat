@@ -137,8 +137,9 @@ class varnishHostStat:
 		if self.log:
 			self.log.info(txt)
 		else:
-			os.system('clear')
-			print txt,
+			if not self.o_json:
+				os.system('clear')
+			print txt
 
 	def txtCmp(self,cmp):
 		if self.o_json:
