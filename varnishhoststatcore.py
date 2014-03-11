@@ -17,7 +17,8 @@ class varnishHostStat:
 		self.log       = False
 		self.mode_a    = False
 		self.time      = int(time.time())
-		
+		self.last      = int(time.time())
+
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
 				self.thr = int(a)
@@ -45,6 +46,7 @@ class varnishHostStat:
 					wait   = 60 - ns + start
 				if wait > 0:
 					self.time += wait
+					self.last += wait
 					time.sleep(wait)
 			elif o == '-F':
 				spl = a.split('@' ,2)
@@ -74,6 +76,9 @@ class varnishHostStat:
 				self.outTxt(txt)
 
 			time.sleep(0.1)
+			if int(time.time()) - self.last > 5:
+				self.vap.VSM_ReOpen()
+				self.last  = int(time.time())
 
 	def makeCmpData(self):
 		now   = int(time.time())
@@ -210,6 +215,7 @@ class varnishHostStat:
 			self.trx[delta][host]['no_fetch_time'] += self.buf[nfd]['worktime']
 
 	def vapCallBack(self, priv, tag, fd, length, spec, ptr, bm):
+		self.last = int(time.time())
 		if spec == 0:
 			return
 

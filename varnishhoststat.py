@@ -28,7 +28,7 @@ if __name__ == '__main__':
 		elif o == '-P':
 			p_file = a
 		elif o == '-V':
-			print 'varnishhoststat (v0.6)'
+			print 'varnishhoststat (v0.7)'
 			sys.exit(0)
 	if d_flag:
 		try:

@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-02-08
-:Version: 0.6
+:Date: 2014-03-11
+:Version: 0.7
 :Manual section: 1
 
 DESCRIPTION
@@ -173,6 +173,8 @@ Fix starting time.
 
 HISTORY
 ===========
+
+Version 0.7: Reopen VSM ,if Varnish restarted.
 
 Version 0.6: Support -a option
 
