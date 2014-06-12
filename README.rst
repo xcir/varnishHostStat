@@ -171,6 +171,10 @@ Show version info.
 ------------------
 Fix starting time.
 
+-n [instance-name]
+--------------------------------
+Select which named Varnishd instance to use in multi-instance set-ups. (See -n for varnishstat, etc)
+
 HISTORY
 ===========
 
