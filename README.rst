@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-03-11
-:Version: 0.7
+:Date: 2014-06-12
+:Version: 0.8
 :Manual section: 1
 
 DESCRIPTION
@@ -177,6 +177,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 0.8: Support -n option. thx mrmonkington[#1]
 
 Version 0.7: Reopen VSM ,if Varnish restarted.
 
