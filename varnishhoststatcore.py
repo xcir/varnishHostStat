@@ -249,7 +249,7 @@ class varnishHostStat:
 		elif ttag == 'ReqURL' and self.buf['url']=='':
 			self.buf['url'] = data
 		elif ttag == 'ReqHeader' and data[:6].lower() == 'host: ':
-			self.buf['Host'] = data[7:]
+			self.buf['Host'] = data[6:]
 		elif ttag == 'RespStatus':
 			self.buf['status'] = int(data)
 		elif ttag == 'ReqAcct':
