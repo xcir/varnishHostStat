@@ -8,14 +8,24 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-06-12
-:Version: 0.8-varnish30
-:Support Varnish Version: 3.0.x
+:Date: 2015-03-08
+:Version: x.x-varnish40
+:Support Varnish Version: 4.0.x
 :Manual section: 1
+
+For Varnish3.0.x
+=================
+See this link.
+https://github.com/xcir/varnishHostStat/tree/varnish30
+
 
 DESCRIPTION
 ===========
 Display to the Statistics for each domain or url-pattern
+
+IN DEVELOPMENT.
+
+DON'T USE PRODUCTION.
 
 ATTENTION
 ===========
