@@ -9,7 +9,8 @@ Display to the statistics for each domain or url-pattern
 
 :Author: Shohei Tanaka(@xcir)
 :Date: 2014-06-12
-:Version: 0.8
+:Version: 0.8-varnish30
+:Support Varnish Version: 3.0.x
 :Manual section: 1
 
 DESCRIPTION
