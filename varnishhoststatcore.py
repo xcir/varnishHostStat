@@ -234,7 +234,7 @@ class varnishHostStat:
 		#print cbd
 		
 		if self.state == 0:
-			#‰Šú
+			#initialize
 			self.state = 1
 			self.buf = {'Host':'#n/a','url':'', 'ReqLength':0,'RespLength':0,'BereqLength':0,'BerespLength':0,'url':'','status':0,'req':0,'fetch':0,'pipe':0,'time':0.0,'worktime':0.0}
 		
