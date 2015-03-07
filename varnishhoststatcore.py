@@ -19,7 +19,7 @@ class varnishHostStat:
 		self.time      = int(time.time())
 		self.last      = int(time.time())
 
-		vops = ['-c', '-i', 'Length,RxHeader,RxUrl,TxStatus,ReqEnd,ReqStart,VCL_Call', '-I', '^([0-9]+$|Host:|/|[0-9\. ]+$|[a-z]+$)']
+		vops = ['-g','request', '-i', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,BereqHeader,ReqURL,BereqURL,RespStatus,Timestamp,Hit']
 
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
@@ -66,23 +66,31 @@ class varnishHostStat:
 			self.mode_a = False
 			print "Disabled -a option. Bacause -F option is not specified."
 
-		self.vap     = varnishapi.VarnishAPI(vops)
+		self.vap     = varnishapi.VarnishLog(vops)
 		self.vslutil = varnishapi.VSLUtil()
 	
 
 	def execute(self):
 		while 1:
 			#dispatch
-			self.vap.VSL_NonBlockingDispatch(self.vapCallBack)
+			self.state = 0
+			ret = self.vap.Dispatch(self.vapCallBack)
 			cmp = self.makeCmpData()
 			if cmp:
 				txt = self.txtCmp(cmp)
 				self.outTxt(txt)
-
-			time.sleep(0.1)
-			if int(time.time()) - self.last > 5:
-				self.vap.VSM_ReOpen()
-				self.last  = int(time.time())
+			if self.state == 1:
+				delta = int((self.buf['time'] - self.time) / self.thr)
+				if self.mode_a:
+					self.appendTrx(self.chkFilter(True)  , delta)
+					self.appendTrx(self.chkFilter(False,'[AF')  , delta)
+				else:
+					self.appendTrx(self.chkFilter()  , delta)
+				#print self.buf
+			if ret == 0:
+				time.sleep(0.1);
+			'''
+			'''
 
 	def makeCmpData(self):
 		now   = int(time.time())
@@ -177,18 +185,18 @@ class varnishHostStat:
 			
 
 
-	def chkFilter(self, dat, forceHost=False, Prefix='[F'):
+	def chkFilter(self, forceHost=False, Prefix='[F'):
 		if not self.filter or forceHost:
-			return dat['Host']
+			return self.buf['Host']
 		i = 0
 		for v in self.filter:
 			i   += 1
 			host = v[1]
 			reg  = v[2]
-			if dat['Host'].endswith(host) and (not reg or reg.match(dat['url'])):
+			if self.buf['Host'].endswith(host) and (not reg or reg.match(self.buf['url'])):
 				return Prefix + str(i) + ']' + v[0]
 
-	def appendTrx(self, host,nfd,  delta):
+	def appendTrx(self, host,  delta):
 		if delta < 0 or not host:
 			return
 
@@ -198,9 +206,9 @@ class varnishHostStat:
 			self.trx[delta][host] = {'req':0, 'fetch':0, 'fetch_time':0.0,'no_fetch_time':0, 'totallen':0,'2xx':0,'3xx':0,'4xx':0,'5xx':0}
 
 		self.trx[delta][host]['req']          += 1
-		self.trx[delta][host]['totallen']     += self.buf[nfd]['Length']
+		self.trx[delta][host]['totallen']     += self.buf['RespLength']
 
-		status = self.buf[nfd]['status']
+		status = self.buf['status']
 		
 		if status >= 200:
 			if   status < 300:
@@ -212,51 +220,53 @@ class varnishHostStat:
 			elif status < 600:
 				self.trx[delta][host]['5xx'] += 1
 
-		if self.buf[nfd]['fetch']:
-			self.trx[delta][host]['fetch_time']    += self.buf[nfd]['worktime']
+		if self.buf['fetch']:
+			self.trx[delta][host]['fetch_time']    += self.buf['worktime']
 			self.trx[delta][host]['fetch']         += 1
 		else:
-			self.trx[delta][host]['no_fetch_time'] += self.buf[nfd]['worktime']
+			self.trx[delta][host]['no_fetch_time'] += self.buf['worktime']
 
-	def vapCallBack(self, priv, tag, fd, length, spec, ptr, bm):
-		self.last = int(time.time())
-		if spec == 0:
-			return
-
-		nml  = self.vap.normalizeDic(priv, tag, fd, length, spec, ptr, bm)
-		ntag = nml['tag']
-		nfd  = str(nml['fd'])
-		nmsg = nml['msg']
-
-		if   ntag == 'ReqStart':
-			self.buf[nfd] = {'Host':'#n/a', 'Length':0,'url':'','status':0,'fetch':0,'time':0.0,'worktime':0.0}
-		elif nfd in self.buf:
-			if ntag == 'VCL_call':
-				if nmsg == 'fetch':
-					self.buf[nfd]['fetch']  = 1 
-			elif ntag == 'Length':
-				self.buf[nfd]['Length'] = int(nmsg)
-			elif ntag == 'RxURL':
-				self.buf[nfd]['url']    = nmsg
-			elif ntag == 'TxStatus':
-				self.buf[nfd]['status'] = int(nmsg)
-			elif ntag == 'ReqEnd':
-				spl = nmsg.split(' ',4)
-				self.buf[nfd]['worktime']   = float(spl[2]) - float(spl[1])
-				self.buf[nfd]['time']       = int(float(spl[2])) #EndTime
-				delta                       = int((self.buf[nfd]['time'] - self.time) / self.thr)
-				
-				if self.mode_a:
-					self.appendTrx(self.chkFilter(self.buf[nfd],True) ,nfd , delta)
-					self.appendTrx(self.chkFilter(self.buf[nfd],False,'[AF') ,nfd , delta)
-				else:
-					self.appendTrx(self.chkFilter(self.buf[nfd]) ,nfd , delta)
-
-				#else:
-				#	print 'delay:'
-				del self.buf[nfd]
-			elif ntag == 'RxHeader':
-				self.buf[nfd]['Host']   = nmsg.split(':', 2)[1].strip()
-
-
+	def vapCallBack(self, vap,cbd,pri):
+		ttag = vap.VSL_tags[cbd['tag']]
+		data = cbd['data'].strip('\0')
+		
+		#print ttag
+		#print cbd
+		
+		if self.state == 0:
+			#‰Šú
+			self.state = 1
+			self.buf = {'Host':'#n/a','url':'', 'ReqLength':0,'RespLength':0,'BereqLength':0,'BerespLength':0,'url':'','status':0,'req':0,'fetch':0,'pipe':0,'time':0.0,'worktime':0.0}
+		
+		if   ttag == 'Timestamp':
+			if   cbd['level'] == 1 and data[:7] == 'Start: ':
+				self.buf['req'] = self.buf['req']+1
+			
+			elif data[:6] == 'Resp: ' or data[:10] == 'PipeSess: ':
+				spl = data.split(' ')
+				self.buf['time']     = float(spl[1])
+				self.buf['worktime'] = float(spl[3])
+		elif ttag == 'ReqURL' and self.buf['url']=='':
+			self.buf['url'] = data
+		elif ttag == 'ReqHeader' and data[:6].lower() == 'host: ':
+			self.buf['Host'] = data[6:]
+		elif ttag == 'RespStatus':
+			self.buf['status'] = int(data)
+		elif ttag == 'ReqAcct':
+			spl = data.split(' ')
+			self.buf['ReqLength']  = long(spl[2])
+			self.buf['RespLength'] = long(spl[5])
+		elif ttag == 'BereqAcct':
+			spl = data.split(' ')
+			self.buf['BereqLength']  = self.buf['BereqLength']  + long(spl[2])
+			self.buf['BerespLength'] = self.buf['BerespLength'] + long(spl[5])
+			self.buf['fetch'] = self.buf['fetch']+1
+		elif ttag == 'PipeAcct':
+			spl = data.split(' ')
+			self.buf['ReqLength']    = long(spl[0])
+			self.buf['BereqLength']  = long(spl[1]) + long(spl[2])
+			self.buf['BerespLength'] = long(spl[3])
+			self.buf['RespLength']   = long(spl[3])
+			self.buf['pipe'] = self.buf['pipe']+1
+		return 0
 
