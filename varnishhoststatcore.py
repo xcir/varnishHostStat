@@ -234,7 +234,7 @@ class varnishHostStat:
 		#print cbd
 		
 		if self.state == 0:
-			#èâä˙
+			#initialize
 			self.state = 1
 			self.buf = {'Host':'#n/a','url':'', 'ReqLength':0,'RespLength':0,'BereqLength':0,'BerespLength':0,'url':'','status':0,'req':0,'fetch':0,'pipe':0,'time':0.0,'worktime':0.0}
 		
@@ -258,8 +258,8 @@ class varnishHostStat:
 			self.buf['RespLength'] = long(spl[5])
 		elif ttag == 'BereqAcct':
 			spl = data.split(' ')
-			self.buf['BereqLength']  = self.buf['BereqLength']  + long(spl[2])
-			self.buf['BerespLength'] = self.buf['BerespLength'] + long(spl[5])
+			self.buf['BereqLength']  += long(spl[2])
+			self.buf['BerespLength'] += long(spl[5])
 			self.buf['fetch'] = self.buf['fetch']+1
 		elif ttag == 'PipeAcct':
 			spl = data.split(' ')
