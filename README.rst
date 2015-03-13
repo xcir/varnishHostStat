@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2015-03-08
-:Version: x.x-varnish40
+:Date: 2015-03-14
+:Version: 0.9-varnish40
 :Support Varnish Version: 4.0.x
 :Manual section: 1
 
@@ -189,18 +189,20 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 HISTORY
 ===========
 
-Version 0.8: Support -n option. thx mrmonkington[#1]
+Version 0.9-varnish40: Support change to Varnish4(In development. Don't use production)
 
-Version 0.7: Reopen VSM ,if Varnish restarted.
+Version 0.8-varnish30: Support -n option. thx mrmonkington[#1]
 
-Version 0.6: Support -a option
+Version 0.7-varnish30: Reopen VSM ,if Varnish restarted.
 
-Version 0.5: Support -D -P option
+Version 0.6-varnish30: Support -a option
 
-Version 0.4: Support -w option
+Version 0.5-varnish30: Support -D -P option
 
-Version 0.3: Support --start option, Bugfix
+Version 0.4-varnish30: Support -w option
 
-Version 0.2: Support -r -j option
+Version 0.3-varnish30: Support --start option, Bugfix
 
-Version 0.1: First version
+Version 0.2-varnish30: Support -r -j option
+
+Version 0.1-varnish30: First version
