@@ -186,7 +186,7 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 HISTORY
 ===========
 
-Version 0.9-varnish40: Support change to Varnish4(In development. Don't use production)
+Version 0.9-varnish40: Support change to Varnish4
 
 Version 0.8-varnish30: Support -n option. thx mrmonkington[#1]
 
