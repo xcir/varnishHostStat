@@ -8,9 +8,9 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2015-03-14
-:Version: 0.9-varnish40
-:Support Varnish Version: 4.0.x, 4.1.x
+:Date: 2015-11-06
+:Version: 0.10-varnish40
+:Support Varnish Version: 4.0.x
 :Manual section: 1
 
 For Varnish3.0.x
@@ -23,6 +23,9 @@ DESCRIPTION
 ===========
 Display to the Statistics for each domain or url-pattern
 
+IN DEVELOPMENT.
+
+DON'T USE PRODUCTION.
 
 ATTENTION
 ===========
@@ -107,7 +110,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -a -F [filter pattern] --start [second] -w [file-name] -D -P [pid-file] -V
+  -r -j -i [interval] -a -F [filter pattern] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V
   
 -r
 ----------------
@@ -179,6 +182,10 @@ Show version info.
 ------------------
 Fix starting time.
 
+--sopath [libvarnishapi.so]
+------------------
+Specify the libvarnishapi.so path, if you non-standard path.
+
 -n [instance-name]
 --------------------------------
 Select which named Varnishd instance to use in multi-instance set-ups. (See -n for varnishstat, etc)
@@ -186,7 +193,9 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 HISTORY
 ===========
 
-Version 0.9-varnish40: Support change to Varnish4
+Version 0.10-varnish40: Support --sopath option.
+
+Version 0.9-varnish40: Support change to Varnish4(In development. Don't use production)
 
 Version 0.8-varnish30: Support -n option. thx mrmonkington[#1]
 
