@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2014-06-12
-:Version: 0.8-varnish30
+:Date: 2015-11-06
+:Version: 0.9-varnish30
 :Support Varnish Version: 3.0.x
 :Manual section: 1
 
@@ -100,7 +100,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -a -F [filter pattern] --start [second] -w [file-name] -D -P [pid-file] -V
+  -r -j -i [interval] -a -F [filter pattern] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -P [pid-file] -V
   
 -r
 ----------------
@@ -172,12 +172,18 @@ Show version info.
 ------------------
 Fix starting time.
 
+--sopath [libvarnishapi.so]
+------------------
+Specify the libvarnishapi.so path, if you non-standard path.
+
 -n [instance-name]
 --------------------------------
 Select which named Varnishd instance to use in multi-instance set-ups. (See -n for varnishstat, etc)
 
 HISTORY
 ===========
+
+Version 0.9-varnish30: Support --sopath option.
 
 Version 0.8: Support -n option. thx mrmonkington[#1]
 
