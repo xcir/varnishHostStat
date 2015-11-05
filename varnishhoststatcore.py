@@ -20,7 +20,7 @@ class varnishHostStat:
 		self.last      = int(time.time())
 
 		vops = ['-g','request', '-i', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,BereqHeader,ReqURL,BereqURL,RespStatus,Timestamp,Hit']
-
+		arg = {}
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
 				self.thr = int(a)
@@ -39,6 +39,8 @@ class varnishHostStat:
 				self.o_json = True
 			elif o == '-n':
 				vops += ['-n', a]
+			elif o == '--sopath':
+				arg["sopath"] = a
 			elif o == '--start':
 				start      = int(a)
 				ns         = datetime.datetime.today().second
@@ -66,7 +68,8 @@ class varnishHostStat:
 			self.mode_a = False
 			print "Disabled -a option. Bacause -F option is not specified."
 
-		self.vap     = varnishapi.VarnishLog(vops)
+		arg["opt"]   = vops
+		self.vap     = varnishapi.VarnishLog(**arg)
 		self.vslutil = varnishapi.VSLUtil()
 	
 
