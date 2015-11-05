@@ -10,7 +10,7 @@ Display to the statistics for each domain or url-pattern
 :Author: Shohei Tanaka(@xcir)
 :Date: 2015-11-06
 :Version: 0.10-varnish40
-:Support Varnish Version: 4.0.x
+:Support Varnish Version: 4.0.x, 4.1.x
 :Manual section: 1
 
 For Varnish3.0.x
