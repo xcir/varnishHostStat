@@ -23,9 +23,6 @@ DESCRIPTION
 ===========
 Display to the Statistics for each domain or url-pattern
 
-IN DEVELOPMENT.
-
-DON'T USE PRODUCTION.
 
 ATTENTION
 ===========
