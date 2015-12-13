@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2015-11-06
-:Version: 0.10-varnish40
+:Date: 2015-12-13
+:Version: 0.11-varnish40
 :Support Varnish Version: 4.0.x, 4.1.x
 :Manual section: 1
 
@@ -189,6 +189,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 0.11-varnish40: Fix Crash if log abandoned.
 
 Version 0.10-varnish40: Support --sopath option.
 

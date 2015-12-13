@@ -70,6 +70,9 @@ class varnishHostStat:
 
 		arg["opt"]   = vops
 		self.vap     = varnishapi.VarnishLog(**arg)
+		if self.vap.error:
+			print self.vap.error
+			exit(1)
 		self.vslutil = varnishapi.VSLUtil()
 	
 
