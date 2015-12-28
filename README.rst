@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2015-12-13
-:Version: 0.11-varnish40
+:Date: 2015-12-28
+:Version: 0.12-varnish40
 :Support Varnish Version: 4.0.x, 4.1.x
 :Manual section: 1
 
@@ -140,7 +140,7 @@ Write the process's PID to the specified file.(require -D option)
 -F [host@url-pattern]
 --------------------------------
 Specify filter pattern.
-Statistics for each domain separately ,if you do not  specified.
+Statistics for each domain separately ,if you do not specified.
 
 example
 #########
@@ -160,6 +160,26 @@ example
   #Bad pattern
   #Not match to example.net@^/img/[0-9]
   -F example.net -F "example.net@^/img/[0-9]" 
+
+-R [pattern/replace]
+--------------------------------
+Specify replace pattern for the host header.
+
+example
+#########
+::
+
+  #Replace from [.] to [-].
+  #This pattern is replace from a.example.net to a-example-net
+  -R "\./-"
+
+  #Using group (see: https://docs.python.org/2.7/library/re.html )
+  -R "(example|varnish-cache).*/\1"
+
+-f [field name(default:host)]
+--------------------------------
+Specify field name.
+Default field is "host"
 
 -a
 --------------------------------
@@ -189,6 +209,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 0.12-varnish40: Support -f, -R option
 
 Version 0.11-varnish40: Fix Crash if log abandoned.
 

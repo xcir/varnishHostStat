@@ -77,7 +77,7 @@ class varnishHostStat:
 					spl[1]
 					])
 			elif o == '-f':
-				self.field = a.rstrip(' :') + ': '
+				self.field = a.lower().rstrip(' :') + ': '
 		if self.mode_a and not self.filter:
 			self.mode_a = False
 			print "Disabled -a option. Bacause -F option is not specified."
