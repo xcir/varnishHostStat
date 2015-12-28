@@ -4,7 +4,6 @@ import varnishapi,time,datetime,os,re,json
 import logging,logging.handlers
 
 
-
 class varnishHostStat:
 	def __init__(self, opts):
 		#utils
@@ -67,8 +66,18 @@ class varnishHostStat:
 				if not self.filter: 
 					self.filter = []
 				self.filter.append(tmp)
+			elif o == '-R':
+				if not self.repl:
+					self.repl   = []
+				# spilit word [/]
+				spl = a.split('/', 1)
+				
+				self.repl.append([
+					re.compile(spl[0]),
+					spl[1]
+					])
 			elif o == '-f':
-				self.field = str(a).rstrip(' :') + ': '
+				self.field = a.rstrip(' :') + ': '
 		if self.mode_a and not self.filter:
 			self.mode_a = False
 			print "Disabled -a option. Bacause -F option is not specified."
@@ -262,6 +271,12 @@ class varnishHostStat:
 			self.buf['url'] = data
 		elif ttag == 'ReqHeader' and data[:self.fieldlen].lower() == self.field:
 			self.buf['Host'] = data[self.fieldlen:]
+			if self.repl:
+				for r in self.repl:
+					tmp = r[0].sub(r[1], self.buf['Host'])
+					if tmp != self.buf['Host']:
+						self.buf['Host'] = tmp
+						break
 		elif ttag == 'RespStatus':
 			self.buf['status'] = int(data)
 		elif ttag == 'ReqAcct':
