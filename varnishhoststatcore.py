@@ -12,6 +12,7 @@ class varnishHostStat:
 		self.trx       = [{}]
 		self.thr       = 10
 		self.filter    = False
+		self.repl      = False
 		self.mode_raw  = False
 		self.o_json    = False
 		self.log       = False
@@ -64,6 +65,16 @@ class varnishHostStat:
 				if not self.filter: 
 					self.filter = []
 				self.filter.append(tmp)
+			elif o == '-R':
+				if not self.repl:
+					self.repl   = []
+				# spilit word [/]
+				spl = a.split('/', 1)
+				
+				self.repl.append([
+					re.compile(spl[0]),
+					spl[1]
+					])
 		if self.mode_a and not self.filter:
 			self.mode_a = False
 			print "Disabled -a option. Bacause -F option is not specified."
@@ -260,6 +271,12 @@ class varnishHostStat:
 				del self.buf[nfd]
 			elif ntag == 'RxHeader':
 				self.buf[nfd]['Host']   = nmsg.split(':', 2)[1].strip()
+				if self.repl:
+					for r in self.repl:
+						tmp = r[0].sub(r[1], self.buf[nfd]['Host'])
+						if tmp != self.buf[nfd]['Host']:
+							self.buf[nfd]['Host'] = tmp
+							break
 
 
 
