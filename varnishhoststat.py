@@ -28,7 +28,7 @@ if __name__ == '__main__':
 		elif o == '-P':
 			p_file = a
 		elif o == '-V':
-			print 'varnishhoststat (v0.7)'
+			print 'varnishhoststat (v0.10-varnish30)'
 			sys.exit(0)
 		elif o == '-n':
 			print 'using instance %s' % a
