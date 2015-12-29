@@ -12,13 +12,15 @@ class varnishHostStat:
 		self.trx       = [{}]
 		self.thr       = 10
 		self.filter    = False
+		self.repl      = False
 		self.mode_raw  = False
 		self.o_json    = False
 		self.log       = False
 		self.mode_a    = False
 		self.time      = int(time.time())
 		self.last      = int(time.time())
-
+		self.field     = 'host: '
+		
 		vops = ['-g','request', '-i', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,BereqHeader,ReqURL,BereqURL,RespStatus,Timestamp,Hit']
 		arg = {}
 		for o,a in opts:
@@ -64,10 +66,23 @@ class varnishHostStat:
 				if not self.filter: 
 					self.filter = []
 				self.filter.append(tmp)
+			elif o == '-R':
+				if not self.repl:
+					self.repl   = []
+				# spilit word [/]
+				spl = a.split('/', 1)
+				
+				self.repl.append([
+					re.compile(spl[0]),
+					spl[1]
+					])
+			elif o == '-f':
+				self.field = a.lower().rstrip(' :') + ': '
 		if self.mode_a and not self.filter:
 			self.mode_a = False
 			print "Disabled -a option. Bacause -F option is not specified."
 
+		self.fieldlen  = len(self.field)
 		arg["opt"]   = vops
 		self.vap     = varnishapi.VarnishLog(**arg)
 		if self.vap.error:
@@ -254,8 +269,14 @@ class varnishHostStat:
 				self.buf['worktime'] = float(spl[3])
 		elif ttag == 'ReqURL' and self.buf['url']=='':
 			self.buf['url'] = data
-		elif ttag == 'ReqHeader' and data[:6].lower() == 'host: ':
-			self.buf['Host'] = data[6:]
+		elif ttag == 'ReqHeader' and data[:self.fieldlen].lower() == self.field:
+			self.buf['Host'] = data[self.fieldlen:]
+			if self.repl:
+				for r in self.repl:
+					tmp = r[0].sub(r[1], self.buf['Host'])
+					if tmp != self.buf['Host']:
+						self.buf['Host'] = tmp
+						break
 		elif ttag == 'RespStatus':
 			self.buf['status'] = int(data)
 		elif ttag == 'ReqAcct':
@@ -266,13 +287,13 @@ class varnishHostStat:
 			spl = data.split(' ')
 			self.buf['BereqLength']  += long(spl[2])
 			self.buf['BerespLength'] += long(spl[5])
-			self.buf['fetch'] = self.buf['fetch']+1
+			self.buf['fetch']        += 1
 		elif ttag == 'PipeAcct':
 			spl = data.split(' ')
 			self.buf['ReqLength']    = long(spl[0])
 			self.buf['BereqLength']  = long(spl[1]) + long(spl[2])
 			self.buf['BerespLength'] = long(spl[3])
 			self.buf['RespLength']   = long(spl[3])
-			self.buf['pipe'] = self.buf['pipe']+1
+			self.buf['pipe']        += 1
 		return 0
 
