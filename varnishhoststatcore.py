@@ -287,13 +287,13 @@ class varnishHostStat:
 			spl = data.split(' ')
 			self.buf['BereqLength']  += long(spl[2])
 			self.buf['BerespLength'] += long(spl[5])
-			self.buf['fetch'] = self.buf['fetch']+1
+			self.buf['fetch']        += 1
 		elif ttag == 'PipeAcct':
 			spl = data.split(' ')
 			self.buf['ReqLength']    = long(spl[0])
 			self.buf['BereqLength']  = long(spl[1]) + long(spl[2])
 			self.buf['BerespLength'] = long(spl[3])
 			self.buf['RespLength']   = long(spl[3])
-			self.buf['pipe'] = self.buf['pipe']+1
+			self.buf['pipe']        += 1
 		return 0
 
