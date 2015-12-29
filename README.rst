@@ -180,6 +180,7 @@ example
 --------------------------------
 Specify field name.
 Default field is "host"
+*This option not change output field name(Host)*
 
 -a
 --------------------------------
