@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2015-11-06
-:Version: 0.9-varnish30
+:Date: 2015-12-29
+:Version: 0.10-varnish30
 :Support Varnish Version: 3.0.x
 :Manual section: 1
 
@@ -154,6 +154,21 @@ example
   #Not match to example.net@^/img/[0-9]
   -F example.net -F "example.net@^/img/[0-9]" 
 
+-R [pattern/replace]
+--------------------------------
+Specify replace pattern for the host header.
+
+example
+#########
+::
+
+  #Replace from [.] to [-].
+  #This pattern is replace from a.example.net to a-example-net
+  -R "\./-"
+
+  #Using group (see: https://docs.python.org/2.7/library/re.html )
+  -R "(example|varnish-cache).*/\1"
+
 -a
 --------------------------------
 Additional filter.
@@ -182,6 +197,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 0.10-varnish30: Support -R option.
 
 Version 0.9-varnish30: Support --sopath option.
 
