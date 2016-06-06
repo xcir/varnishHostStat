@@ -80,13 +80,13 @@ class varnishHostStat:
 				self.field = a.lower().rstrip(' :') + ': '
 		if self.mode_a and not self.filter:
 			self.mode_a = False
-			print "Disabled -a option. Bacause -F option is not specified."
+			print("Disabled -a option. Bacause -F option is not specified.")
 
 		self.fieldlen  = len(self.field)
 		arg["opt"]   = vops
 		self.vap     = varnishapi.VarnishLog(**arg)
 		if self.vap.error:
-			print self.vap.error
+			print(self.vap.error)
 			exit(1)
 		self.vslutil = varnishapi.VSLUtil()
 	
@@ -177,7 +177,7 @@ class varnishHostStat:
 		else:
 			if not self.o_json:
 				os.system('clear')
-			print txt
+			print(txt)
 
 	def txtCmp(self,cmp):
 		if self.o_json:
