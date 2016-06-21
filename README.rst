@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2016-06-20
-:Version: 0.14-varnish40
+:Date: 2016-06-21
+:Version: 0.15-varnish40
 :Support Varnish Version: 4.0.x, 4.1.x
 :Manual section: 1
 
@@ -222,6 +222,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 0.15-varnish40: Update varnishapi(include 40.15)
 
 Version 0.14-varnish40: Update varnishapi(include 40.14)
 
