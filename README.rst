@@ -8,9 +8,9 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2016-06-28
-:Version: 0.16-varnish40
-:Support Varnish Version: 4.0.x, 4.1.x
+:Date: 2016-09-18
+:Version: 50.17
+:Support Varnish Version: 4.0.x, 4.1.x, 5.0.x
 :Manual section: 1
 
 For Varnish3.0.x
@@ -18,6 +18,11 @@ For Varnish3.0.x
 See this link.
 https://github.com/xcir/varnishHostStat/tree/varnish30
 
+Versioning
+============
+[varnish-version].[library-version]
+
+50.17 is v17 for Varnish5.0.x
 
 DESCRIPTION
 ===========
@@ -222,6 +227,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 50.17: Update varnishapi(include 50.18)
 
 Version 0.16-varnish40: Update varnishapi(include 40.16)
 
