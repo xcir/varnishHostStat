@@ -19,9 +19,10 @@ class varnishHostStat:
 		self.mode_a    = False
 		self.time      = int(time.time())
 		self.last      = int(time.time())
+		self.error     = ''
 		self.field     = 'host: '
 		
-		vops = ['-g','request', '-i', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,BereqHeader,ReqURL,BereqURL,RespStatus,Timestamp,Hit']
+		vops = ['-g','request', '-I', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp:(?i)^([0-9]|https?:/|/|Start: |PipeSess: |Resp: |host: )']
 		arg = {}
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
@@ -95,7 +96,10 @@ class varnishHostStat:
 		while 1:
 			#dispatch
 			self.state = 0
+			self.vap.error = ''
 			ret = self.vap.Dispatch(self.vapCallBack)
+			if self.vap.error != '':
+				self.error = self.vap.error
 			cmp = self.makeCmpData()
 			if cmp:
 				txt = self.txtCmp(cmp)
@@ -139,6 +143,8 @@ class varnishHostStat:
 			tmp['#alldata']    = total
 			tmp['@start-time'] = otime
 			tmp['@end-time']   = now -1
+			tmp['@info']       = self.error
+			self.error = ''
 			if self.mode_raw:
 				return tmp
 			for host, v in tmp.items():
@@ -185,7 +191,7 @@ class varnishHostStat:
 		else:
 			ret = ''
 			#os.system('clear')
-			ret+= str(datetime.datetime.fromtimestamp(cmp['@start-time'])) + ' - ' + str(datetime.datetime.fromtimestamp(cmp['@end-time'])) + ' (interval:'+ str(self.thr) +')' + "\n"
+			ret+= "%s - %s (interval:%d) %s\n" % (datetime.datetime.fromtimestamp(cmp['@start-time']), datetime.datetime.fromtimestamp(cmp['@end-time']), self.thr, cmp['@info'])
 			if self.mode_raw:
 				ret+= "%-50s | %-11s | %-11s | %-11s | %-13s | %-11s | %-11s | %-11s | %-11s | %-11s |\n" % ("Host", "req", "fetch", "fetch_time","no_fetch_time","totallen", "2xx","3xx", "4xx", "5xx")
 				ret+= '-' * 179 + "|\n"
@@ -250,9 +256,6 @@ class varnishHostStat:
 	def vapCallBack(self, vap,cbd,pri):
 		ttag = vap.VSL_tags[cbd['tag']]
 		data = cbd['data'].strip('\0')
-		
-		#print ttag
-		#print cbd
 		
 		if self.state == 0:
 			#initialize
