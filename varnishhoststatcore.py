@@ -21,7 +21,7 @@ class varnishHostStat:
 		self.last      = int(time.time())
 		self.field     = 'host: '
 		
-		vops = ['-g','request', '-i', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,BereqHeader,ReqURL,BereqURL,RespStatus,Timestamp,Hit']
+		vops = ['-g','request', '-i', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp']
 		arg = {}
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
