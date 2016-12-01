@@ -19,6 +19,7 @@ class varnishHostStat:
 		self.mode_a    = False
 		self.time      = int(time.time())
 		self.last      = int(time.time())
+		self.error     = ''
 		self.field     = 'host: '
 		
 		vops = ['-g','request', '-I', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp:(?i)^([0-9]|https?:/|/|Start: |PipeSess: |Resp: |host: )']
@@ -95,7 +96,10 @@ class varnishHostStat:
 		while 1:
 			#dispatch
 			self.state = 0
+			self.vap.error = ''
 			ret = self.vap.Dispatch(self.vapCallBack)
+			if self.vap.error != '':
+				self.error = self.vap.error
 			cmp = self.makeCmpData()
 			if cmp:
 				txt = self.txtCmp(cmp)
@@ -139,6 +143,8 @@ class varnishHostStat:
 			tmp['#alldata']    = total
 			tmp['@start-time'] = otime
 			tmp['@end-time']   = now -1
+			tmp['@info']       = self.error
+			self.error = ''
 			if self.mode_raw:
 				return tmp
 			for host, v in tmp.items():
