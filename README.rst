@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2016-09-18
-:Version: 50.17
+:Date: 2016-12-02
+:Version: 50.18
 :Support Varnish Version: 4.0.x, 4.1.x, 5.0.x
 :Manual section: 1
 
@@ -75,15 +75,15 @@ JSON-format output (varnishhoststat.py -j)
 ----------------------------------------------------
 ::
 
-  {"hoge.example.net": {"avg_fsize": 0.0048828125, "rps": 0.5, "avg_not_fetch_time": 0.0, "hit": 0.0, "avg_fetch_time": 0.00086789131164550777, "fetch_time": 0.0043394565582275391, "2xx": 5, "avg_2xx": 0.5, "mbps": 1.9073486328125e-05, "req": 5, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0, "totallen": 25, "4xx": 0, "3xx": 0, "avg_time": 0.00086789131164550777, "avg_5xx": 0.0, "fetch": 5, "avg_4xx": 0.0}, "#alldata": {"avg_fsize": 0.1162109375, "rps": 2.5, "avg_not_fetch_time": 8.5520744323730466e-05, "hit": 40.0, "avg_fetch_time": 0.0009458700815836589, "fetch_time": 0.014188051223754883, "2xx": 15, "avg_2xx": 1.5, "mbps": 0.002269744873046875, "req": 25, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00085520744323730469, "totallen": 2975, "4xx": 10, "3xx": 0, "avg_time": 0.00060173034667968753, "avg_5xx": 0.0, "fetch": 15, "avg_4xx": 1.0}, "example.net": {"avg_fsize": 0.14404296875, "rps": 2.0, "avg_not_fetch_time": 8.5520744323730466e-05, "hit": 50.0, "avg_fetch_time": 0.00098485946655273442, "fetch_time": 0.0098485946655273438, "2xx": 10, "avg_2xx": 1.0, "mbps": 0.00225067138671875, "req": 20, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00085520744323730469, "totallen": 2950, "4xx": 10, "3xx": 0, "avg_time": 0.00053519010543823242, "avg_5xx": 0.0, "fetch": 10, "avg_4xx": 1.0}, "@start-time": 1391437481, "@end-time": 1391437490}
-  {"hoge.example.net": {"avg_fsize": 0.0048828125, "rps": 0.5, "avg_not_fetch_time": 0.0, "hit": 0.0, "avg_fetch_time": 0.00083451271057128902, "fetch_time": 0.0041725635528564453, "2xx": 5, "avg_2xx": 0.5, "mbps": 1.9073486328125e-05, "req": 5, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0, "totallen": 25, "4xx": 0, "3xx": 0, "avg_time": 0.00083451271057128902, "avg_5xx": 0.0, "fetch": 5, "avg_4xx": 0.0}, "#alldata": {"avg_fsize": 0.1162109375, "rps": 2.5, "avg_not_fetch_time": 8.2373619079589844e-05, "hit": 40.0, "avg_fetch_time": 0.00090791384379069009, "fetch_time": 0.013618707656860352, "2xx": 15, "avg_2xx": 1.5, "mbps": 0.002269744873046875, "req": 25, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00082373619079589844, "totallen": 2975, "4xx": 10, "3xx": 0, "avg_time": 0.00057769775390624999, "avg_5xx": 0.0, "fetch": 15, "avg_4xx": 1.0}, "example.net": {"avg_fsize": 0.14404296875, "rps": 2.0, "avg_not_fetch_time": 8.2373619079589844e-05, "hit": 50.0, "avg_fetch_time": 0.00094461441040039062, "fetch_time": 0.0094461441040039062, "2xx": 10, "avg_2xx": 1.0, "mbps": 0.00225067138671875, "req": 20, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00082373619079589844, "totallen": 2950, "4xx": 10, "3xx": 0, "avg_time": 0.00051349401473999023, "avg_5xx": 0.0, "fetch": 10, "avg_4xx": 1.0}, "@start-time": 1391437491, "@end-time": 1391437500}
+  {"hoge.example.net": {"avg_fsize": 0.0048828125, "rps": 0.5, "avg_not_fetch_time": 0.0, "hit": 0.0, "avg_fetch_time": 0.00086789131164550777, "fetch_time": 0.0043394565582275391, "2xx": 5, "avg_2xx": 0.5, "mbps": 1.9073486328125e-05, "req": 5, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0, "totallen": 25, "4xx": 0, "3xx": 0, "avg_time": 0.00086789131164550777, "avg_5xx": 0.0, "fetch": 5, "avg_4xx": 0.0}, "#alldata": {"avg_fsize": 0.1162109375, "rps": 2.5, "avg_not_fetch_time": 8.5520744323730466e-05, "hit": 40.0, "avg_fetch_time": 0.0009458700815836589, "fetch_time": 0.014188051223754883, "2xx": 15, "avg_2xx": 1.5, "mbps": 0.002269744873046875, "req": 25, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00085520744323730469, "totallen": 2975, "4xx": 10, "3xx": 0, "avg_time": 0.00060173034667968753, "avg_5xx": 0.0, "fetch": 15, "avg_4xx": 1.0}, "example.net": {"avg_fsize": 0.14404296875, "rps": 2.0, "avg_not_fetch_time": 8.5520744323730466e-05, "hit": 50.0, "avg_fetch_time": 0.00098485946655273442, "fetch_time": 0.0098485946655273438, "2xx": 10, "avg_2xx": 1.0, "mbps": 0.00225067138671875, "req": 20, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00085520744323730469, "totallen": 2950, "4xx": 10, "3xx": 0, "avg_time": 0.00053519010543823242, "avg_5xx": 0.0, "fetch": 10, "avg_4xx": 1.0}, "@start-time": 1391437481, "@end-time": 1391437490, "@info": ""}
+  {"hoge.example.net": {"avg_fsize": 0.0048828125, "rps": 0.5, "avg_not_fetch_time": 0.0, "hit": 0.0, "avg_fetch_time": 0.00083451271057128902, "fetch_time": 0.0041725635528564453, "2xx": 5, "avg_2xx": 0.5, "mbps": 1.9073486328125e-05, "req": 5, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0, "totallen": 25, "4xx": 0, "3xx": 0, "avg_time": 0.00083451271057128902, "avg_5xx": 0.0, "fetch": 5, "avg_4xx": 0.0}, "#alldata": {"avg_fsize": 0.1162109375, "rps": 2.5, "avg_not_fetch_time": 8.2373619079589844e-05, "hit": 40.0, "avg_fetch_time": 0.00090791384379069009, "fetch_time": 0.013618707656860352, "2xx": 15, "avg_2xx": 1.5, "mbps": 0.002269744873046875, "req": 25, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00082373619079589844, "totallen": 2975, "4xx": 10, "3xx": 0, "avg_time": 0.00057769775390624999, "avg_5xx": 0.0, "fetch": 15, "avg_4xx": 1.0}, "example.net": {"avg_fsize": 0.14404296875, "rps": 2.0, "avg_not_fetch_time": 8.2373619079589844e-05, "hit": 50.0, "avg_fetch_time": 0.00094461441040039062, "fetch_time": 0.0094461441040039062, "2xx": 10, "avg_2xx": 1.0, "mbps": 0.00225067138671875, "req": 20, "5xx": 0, "avg_3xx": 0.0, "no_fetch_time": 0.00082373619079589844, "totallen": 2950, "4xx": 10, "3xx": 0, "avg_time": 0.00051349401473999023, "avg_5xx": 0.0, "fetch": 10, "avg_4xx": 1.0}, "@start-time": 1391437491, "@end-time": 1391437500, "@info": ""}
 
 Raw-data output by JSON-format(varnishhoststat.py -r -j)
 ----------------------------------------------------
 ::
 
-  {"hoge.example.net": {"fetch_time": 0.0037126541137695312, "2xx": 4, "req": 4, "5xx": 0, "no_fetch_time": 0, "totallen": 20, "4xx": 0, "3xx": 0, "fetch": 4}, "#alldata": {"fetch_time": 0.01218414306640625, "2xx": 13, "req": 23, "5xx": 0, "no_fetch_time": 0.00090909004211425781, "totallen": 2965, "4xx": 10, "3xx": 0, "fetch": 13}, "example.net": {"fetch_time": 0.0084714889526367188, "2xx": 9, "req": 19, "5xx": 0, "no_fetch_time": 0.00090909004211425781, "totallen": 2945, "4xx": 10, "3xx": 0, "fetch": 9}, "@start-time": 1391437527, "@end-time": 1391437536}
-  {"hoge.example.net": {"fetch_time": 0.0052282810211181641, "2xx": 5, "req": 5, "5xx": 0, "no_fetch_time": 0, "totallen": 25, "4xx": 0, "3xx": 0, "fetch": 5}, "#alldata": {"fetch_time": 0.013852119445800781, "2xx": 15, "req": 25, "5xx": 0, "no_fetch_time": 0.00098705291748046875, "totallen": 2975, "4xx": 10, "3xx": 0, "fetch": 15}, "example.net": {"fetch_time": 0.0086238384246826172, "2xx": 10, "req": 20, "5xx": 0, "no_fetch_time": 0.00098705291748046875, "totallen": 2950, "4xx": 10, "3xx": 0, "fetch": 10}, "@start-time": 1391437537, "@end-time": 1391437546}
+  {"hoge.example.net": {"fetch_time": 0.0037126541137695312, "2xx": 4, "req": 4, "5xx": 0, "no_fetch_time": 0, "totallen": 20, "4xx": 0, "3xx": 0, "fetch": 4}, "#alldata": {"fetch_time": 0.01218414306640625, "2xx": 13, "req": 23, "5xx": 0, "no_fetch_time": 0.00090909004211425781, "totallen": 2965, "4xx": 10, "3xx": 0, "fetch": 13}, "example.net": {"fetch_time": 0.0084714889526367188, "2xx": 9, "req": 19, "5xx": 0, "no_fetch_time": 0.00090909004211425781, "totallen": 2945, "4xx": 10, "3xx": 0, "fetch": 9}, "@start-time": 1391437527, "@end-time": 1391437536, "@info": ""}
+  {"hoge.example.net": {"fetch_time": 0.0052282810211181641, "2xx": 5, "req": 5, "5xx": 0, "no_fetch_time": 0, "totallen": 25, "4xx": 0, "3xx": 0, "fetch": 5}, "#alldata": {"fetch_time": 0.013852119445800781, "2xx": 15, "req": 25, "5xx": 0, "no_fetch_time": 0.00098705291748046875, "totallen": 2975, "4xx": 10, "3xx": 0, "fetch": 15}, "example.net": {"fetch_time": 0.0086238384246826172, "2xx": 10, "req": 20, "5xx": 0, "no_fetch_time": 0.00098705291748046875, "totallen": 2950, "4xx": 10, "3xx": 0, "fetch": 10}, "@start-time": 1391437537, "@end-time": 1391437546, "@info": ""}
 
 OUTPUT FORMAT
 ==============
@@ -91,7 +91,7 @@ OUTPUT FORMAT
 
   -Default
   
-  [start-time] - [end-time] (interval:[interval time])
+  [start-time] - [end-time] (interval:[interval time]) [error message]
   Host                    | Mbps                 | rps             | hit      | time/req              | (H)time/req                             | (M)time/req                            | KB/req                     | 2xx/s                 | 3xx/s                 | 4xx/s                 | 5xx/s
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   Host or filter rule     | Traffic              | Request Per Sec | Hit per  | Average response time | Average response time by hit request    |  Average response time by miss request | average response body size | HTTP status 2xx rate  | HTTP status 3xx rate  | HTTP status 4xx rate  | HTTP status 5xx rate
@@ -102,7 +102,7 @@ OUTPUT FORMAT
     Not fetch        = Hit
   
   -Raw
-  [start-time] - [end-time] (interval:[interval time])
+  [start-time] - [end-time] (interval:[interval time]) [error message]
   Host                 | req           | fetch       | fetch_time                   | no_fetch_time         | totallen                 | 2xx                    | 3xx                    | 4xx                    | 5xx                    |
   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
   Host or filter rule  | Request count | Fetch count | Total time(fetch to backend) | Total time(not fetch) | Total transfer body size | HTTP-status count(2xx) | HTTP-status count(3xx) | HTTP-status count(4xx) | HTTP-status count(5xx) |
@@ -227,6 +227,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 50.18: Use Python3. Enhanced performance. add @info (output sample:Log overrun, Log abandoned)
 
 Version 50.17: Update varnishapi(include 50.18)
 
