@@ -189,7 +189,7 @@ class varnishHostStat:
 				tmp[host]['avg_4xx']    = float(v['4xx'])          / self.thr
 				tmp[host]['avg_5xx']    = float(v['5xx'])          / self.thr
 				for status in self.exstatus.keys():
-					tmp[host]['avg_%s' % (status)]    = float(v[status])          / self.thr
+					tmp[host]['avg_' + status]    = float(v[status])          / self.thr
 			return tmp
 		else:
 			while len(self.trx) -1 < delta:
