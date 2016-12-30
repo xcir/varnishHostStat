@@ -8,8 +8,8 @@ Display to the statistics for each domain or url-pattern
 -----------------------------------------------------------
 
 :Author: Shohei Tanaka(@xcir)
-:Date: 2016-12-02
-:Version: 50.18
+:Date: 2016-12-30
+:Version: 50.19
 :Support Varnish Version: 4.0.x, 4.1.x, 5.0.x
 :Manual section: 1
 
@@ -243,6 +243,8 @@ Select which named Varnishd instance to use in multi-instance set-ups. (See -n f
 
 HISTORY
 ===========
+
+Version 50.19: Fix if it's not come request within the interval-time, get an error. Support --status option.
 
 Version 50.18: Use Python3. Enhanced performance. add @info (output sample:Log overrun, Log abandoned)
 
