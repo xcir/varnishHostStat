@@ -15,10 +15,10 @@ def main(opts):
 
 if __name__ == '__main__':
 	try:
-		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath="])
+		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath=", "status="])
 	except(getopt.GetoptError):
 		print('invalid option')
-		print('usage: varnishhoststat -r -j -i [interval] -a -F [filter pattern] -R [replace pattern] -f [field name(default:host)] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V')
+		print('usage: varnishhoststat -r -j -i [interval] -a -F [filter pattern] -R [replace pattern] -f [field name(default:host)] --status [status,status,...] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V')
 		sys.exit(2)
 	
 	d_flag = False
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 		elif o == '-P':
 			p_file = a
 		elif o == '-V':
-			print('varnishhoststat (v0.16-varnish40)')
+			print('varnishhoststat (50.19)')
 			sys.exit(0)
 		elif o == '-n':
 			print('using instance %s' % a)
