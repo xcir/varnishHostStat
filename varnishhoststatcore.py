@@ -209,8 +209,8 @@ class varnishHostStat:
 		else:
 			ret = ''
 			ret+= "%s - %s (interval:%d) %s\n" % (datetime.datetime.fromtimestamp(cmp['@start-time']), datetime.datetime.fromtimestamp(cmp['@end-time']), self.thr, cmp['@info'])
+			ret+= self.header
 			if self.mode_raw:
-				ret+= self.header
 				for host in sorted(cmp.keys()):
 					if host[0] == '@':
 						continue
@@ -222,7 +222,6 @@ class varnishHostStat:
 						suf+="| %("+status+")11d "
 					ret+= ("%(host)-50s | %(req)11d | %(fetch)11d | %(fetch_time)11f | %(no_fetch_time)13f | %(totallen)11d | %(2xx)11d | %(3xx)11d | %(4xx)11d | %(5xx)11d "+suf+"|\n") % val 
 			else:
-				ret+= self.header
 				for host in sorted(cmp.keys()):
 					if host[0] == '@':
 						continue
