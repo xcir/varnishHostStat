@@ -21,7 +21,8 @@ class varnishHostStat:
 		self.last      = int(time.time())
 		self.error     = ''
 		self.field     = 'host: '
-		
+		self.exstatus  = {}
+		self.header    = ''
 		vops = ['-g','request', '-I', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp:(?i)^([0-9]|https?:/|/|Start: |PipeSess: |Resp: |host: )']
 		arg = {}
 		for o,a in opts:
@@ -44,6 +45,10 @@ class varnishHostStat:
 				vops += ['-n', a]
 			elif o == '--sopath':
 				arg["sopath"] = a
+			elif o == '--status':
+				spl = a.split(',')
+				for status in spl:
+					self.exstatus[status] = 0
 			elif o == '--start':
 				start      = int(a)
 				ns         = datetime.datetime.today().second
@@ -82,7 +87,18 @@ class varnishHostStat:
 		if self.mode_a and not self.filter:
 			self.mode_a = False
 			print("Disabled -a option. Bacause -F option is not specified.")
-
+		if self.mode_raw:
+			self.header = "%-50s | %-11s | %-11s | %-11s | %-13s | %-11s | %-11s | %-11s | %-11s | %-11s |" % ("Host", "req", "fetch", "fetch_time","no_fetch_time","totallen", "2xx","3xx", "4xx", "5xx")
+			for status in self.exstatus.keys():
+				self.header +=  " %-11s |" % (status+"")
+			self.header += "\n"
+			self.header += '-' * (179 + len(self.exstatus)* 14) + "|\n"
+		else:
+			self.header = "%-50s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |" % ("Host", "Mbps", "rps", "hit", "time/req","(H)time/req", "(M)time/req", "KB/req", "2xx/s", "3xx/s", "4xx/s", "5xx/s")
+			for status in self.exstatus.keys():
+				self.header +=  " %-11s |" % (status+"/s")
+			self.header += "\n"
+			self.header += '-' * (205 + len(self.exstatus)* 14) + "|\n"
 		self.fieldlen  = len(self.field)
 		arg["opt"]   = vops
 		self.vap     = varnishapi.VarnishLog(**arg)
@@ -172,6 +188,8 @@ class varnishHostStat:
 				tmp[host]['avg_3xx']    = float(v['3xx'])          / self.thr
 				tmp[host]['avg_4xx']    = float(v['4xx'])          / self.thr
 				tmp[host]['avg_5xx']    = float(v['5xx'])          / self.thr
+				for status in self.exstatus.keys():
+					tmp[host]['avg_%s' % (status)]    = float(v[status])          / self.thr
 			return tmp
 		else:
 			while len(self.trx) -1 < delta:
@@ -190,24 +208,31 @@ class varnishHostStat:
 			return json.dumps(cmp, ensure_ascii=False)
 		else:
 			ret = ''
-			#os.system('clear')
 			ret+= "%s - %s (interval:%d) %s\n" % (datetime.datetime.fromtimestamp(cmp['@start-time']), datetime.datetime.fromtimestamp(cmp['@end-time']), self.thr, cmp['@info'])
 			if self.mode_raw:
-				ret+= "%-50s | %-11s | %-11s | %-11s | %-13s | %-11s | %-11s | %-11s | %-11s | %-11s |\n" % ("Host", "req", "fetch", "fetch_time","no_fetch_time","totallen", "2xx","3xx", "4xx", "5xx")
-				ret+= '-' * 179 + "|\n"
+				ret+= self.header
 				for host in sorted(cmp.keys()):
 					if host[0] == '@':
 						continue
 					v = cmp[host]
-					ret+= "%-50s | %11d | %11d | %11f | %13f | %11d | %11d | %11d | %11d | %11d |\n" % (host, v['req'], v['fetch'], v['fetch_time'],v['no_fetch_time'], v['totallen'], v['2xx'], v['3xx'], v['4xx'], v['5xx'] )
+					val = {'host':host, 'req':v['req'], 'fetch':v['fetch'], 'fetch_time':v['fetch_time'],'no_fetch_time':v['no_fetch_time'], 'totallen':v['totallen'], '2xx':v['2xx'], '3xx':v['3xx'], '4xx':v['4xx'], '5xx':v['5xx']}
+					suf = ''
+					for status in self.exstatus.keys():
+						val[status] = v[status]
+						suf+="| %("+status+")11d "
+					ret+= ("%(host)-50s | %(req)11d | %(fetch)11d | %(fetch_time)11f | %(no_fetch_time)13f | %(totallen)11d | %(2xx)11d | %(3xx)11d | %(4xx)11d | %(5xx)11d "+suf+"|\n") % val 
 			else:
-				ret+= "%-50s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n" % ("Host", "Mbps", "rps", "hit", "time/req","(H)time/req", "(M)time/req", "KB/req", "2xx/s", "3xx/s", "4xx/s", "5xx/s")
-				ret+= '-' * 205 + "|\n"
+				ret+= self.header
 				for host in sorted(cmp.keys()):
 					if host[0] == '@':
 						continue
 					v = cmp[host]
-					ret+= "%-50s | %-11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f | %11f |\n" % (host, v['mbps'], v['rps'], v['hit'], v['avg_time'], v['avg_not_fetch_time'], v['avg_fetch_time'], v['avg_fsize'], v['avg_2xx'], v['avg_3xx'], v['avg_4xx'], v['avg_5xx'])
+					val = {'host':host, 'mbps':v['mbps'], 'rps':v['rps'], 'hit':v['hit'], 'avg_time':v['avg_time'], 'avg_not_fetch_time':v['avg_not_fetch_time'], 'avg_fetch_time':v['avg_fetch_time'], 'avg_fsize':v['avg_fsize'], 'avg_2xx':v['avg_2xx'], 'avg_3xx':v['avg_3xx'], 'avg_4xx':v['avg_4xx'], 'avg_5xx':v['avg_5xx']}
+					suf = ''
+					for status in self.exstatus.keys():
+						val['avg_'+ status] = v['avg_'+ status]
+						suf+="| %(avg_"+status+")11f "
+					ret+= ("%(host)-50s | %(mbps)-11f | %(rps)11f | %(hit)11f | %(avg_time)11f | %(avg_not_fetch_time)11f | %(avg_fetch_time)11f | %(avg_fsize)11f | %(avg_2xx)11f | %(avg_3xx)11f | %(avg_4xx)11f | %(avg_5xx)11f "+suf+"|\n") % val
 			return ret
 			
 
@@ -231,6 +256,7 @@ class varnishHostStat:
 			self.trx.append({})
 		if host not in self.trx[delta]:
 			self.trx[delta][host] = {'req':0, 'fetch':0, 'fetch_time':0.0,'no_fetch_time':0, 'totallen':0,'2xx':0,'3xx':0,'4xx':0,'5xx':0}
+			self.trx[delta][host].update(self.exstatus)
 
 		self.trx[delta][host]['req']          += 1
 		self.trx[delta][host]['totallen']     += self.buf['RespLength']
@@ -246,6 +272,8 @@ class varnishHostStat:
 				self.trx[delta][host]['4xx'] += 1
 			elif status < 600:
 				self.trx[delta][host]['5xx'] += 1
+		if str(status) in self.exstatus:
+			self.trx[delta][host][str(status)] += 1
 
 		if self.buf['fetch']:
 			self.trx[delta][host]['fetch_time']    += self.buf['worktime']

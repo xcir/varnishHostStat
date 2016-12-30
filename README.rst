@@ -112,7 +112,7 @@ OPTION
 ===========
 ::
 
-  -r -j -i [interval] -a -F [filter pattern] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V
+  -r -j -i [interval] -a -F [filter pattern] -R [replace pattern] -f [field name(default:host)] --status [status,status,...] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V
   
 -r
 ----------------
@@ -212,6 +212,22 @@ Move log file ,if you want rotation. (Don't send HUP)
 -V
 --------------------------------
 Show version info.
+
+--status [status,status,...]
+------------------
+Append summarize status
+
+example
+#########
+::
+
+  #./varnishhoststat.py -status 200,404
+  2016-12-30 15:33:40 - 2016-12-30 15:33:49 (interval:10)
+  Host                                               | Mbps        | rps         | hit         | time/req    | (H)time/req | (M)time/req | KB/req      | 2xx/s       | 3xx/s       | 4xx/s       | 5xx/s       | 200/s       | 404/s       |
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  #alldata                                           | 0.030865    |    1.200000 |    0.000000 |    0.000052 |    0.000000 |    0.000052 |    3.292236 |    1.100000 |    0.000000 |    0.100000 |    0.000000 |    1.100000 |    0.100000 |
+  192.168.1.37:6081                                  | 0.030865    |    1.200000 |    0.000000 |    0.000052 |    0.000000 |    0.000052 |    3.292236 |    1.100000 |    0.000000 |    0.100000 |    0.000000 |    1.100000 |    0.100000 |
+
 
 --start [second]
 ------------------
