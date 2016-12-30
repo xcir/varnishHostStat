@@ -139,7 +139,7 @@ class varnishHostStat:
 			otime     = self.time
 			self.time = now
 			if len(total) == 0:
-				return {'@start-time':otime, '@end-time':now -1}
+				return {'@start-time':otime, '@end-time':now -1, '@info':''}
 			tmp['#alldata']    = total
 			tmp['@start-time'] = otime
 			tmp['@end-time']   = now -1
