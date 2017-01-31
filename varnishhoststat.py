@@ -38,7 +38,7 @@ if __name__ == '__main__':
 			pid = os.fork()
 			if pid > 0:
 				sys.exit(0)
-		except(OSError, e):
+		except OSError as e:
 			sys.stderr.write("fork #1 failed: %d (%s)" % (e.errno, e.strerror))
 			sys.exit(1)
 		os.chdir("/")
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 				if p_file:
 					open(p_file,'w').write("%d"%pid)
 				sys.exit(0)
-		except(OSError, e):
+		except OSError as e:
 			sys.stderr.write("fork #2 failed: %d (%s)" % (e.errno, e.strerror))
 			sys.exit(1)
 	main(opts)
