@@ -16,7 +16,7 @@ def main(opts):
 if __name__ == '__main__':
 	try:
 		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath=", "status="])
-	except(getopt.GetoptError):
+	except getopt.GetoptError:
 		print('invalid option')
 		print('usage: varnishhoststat -r -j -i [interval] -a -F [filter pattern] -R [replace pattern] -f [field name(default:host)] --status [status,status,...] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V')
 		sys.exit(2)
@@ -38,7 +38,7 @@ if __name__ == '__main__':
 			pid = os.fork()
 			if pid > 0:
 				sys.exit(0)
-		except(OSError, e):
+		except OSError as e:
 			sys.stderr.write("fork #1 failed: %d (%s)" % (e.errno, e.strerror))
 			sys.exit(1)
 		os.chdir("/")
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 				if p_file:
 					open(p_file,'w').write("%d"%pid)
 				sys.exit(0)
-		except(OSError, e):
+		except OSError as e:
 			sys.stderr.write("fork #2 failed: %d (%s)" % (e.errno, e.strerror))
 			sys.exit(1)
 	main(opts)

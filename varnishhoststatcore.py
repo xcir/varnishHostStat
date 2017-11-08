@@ -109,29 +109,21 @@ class varnishHostStat:
 	
 
 	def execute(self):
+		self.state=0
+		arg = {
+			'cb' : self.vapLineCallBack,
+			'groupcb' : self.vapGroupCallBack,
+			'maxread' : 0,
+		}
 		while 1:
 			#dispatch
-			self.state = 0
 			self.vap.error = ''
-			ret = self.vap.Dispatch(self.vapCallBack)
+			ret = self.vap.Dispatch(**arg)
 			if self.vap.error != '':
 				self.error = self.vap.error
-			cmp = self.makeCmpData()
-			if cmp:
-				txt = self.txtCmp(cmp)
-				self.outTxt(txt)
-			if self.state == 1:
-				delta = int((self.buf['time'] - self.time) / self.thr)
-				if self.mode_a:
-					self.appendTrx(self.chkFilter(True)  , delta)
-					self.appendTrx(self.chkFilter(False,'[AF')  , delta)
-				else:
-					self.appendTrx(self.chkFilter()  , delta)
-				#print self.buf
 			if ret == 0:
 				time.sleep(0.1);
-			'''
-			'''
+			self.vapGroupCallBack(None, None)
 
 	def makeCmpData(self):
 		now   = int(time.time())
@@ -280,7 +272,21 @@ class varnishHostStat:
 		else:
 			self.trx[delta][host]['no_fetch_time'] += self.buf['worktime']
 
-	def vapCallBack(self, vap,cbd,pri):
+	def vapGroupCallBack(self, vap, prv):
+		cmp = self.makeCmpData()
+		if cmp:
+			txt = self.txtCmp(cmp)
+			self.outTxt(txt)
+		if self.state == 1:
+			delta = int((self.buf['time'] - self.time) / self.thr)
+			if self.mode_a:
+				self.appendTrx(self.chkFilter(True)  , delta)
+				self.appendTrx(self.chkFilter(False,'[AF')  , delta)
+			else:
+				self.appendTrx(self.chkFilter()  , delta)
+		self.state = 0
+		
+	def vapLineCallBack(self, vap, cbd, prv):
 		ttag = vap.VSL_tags[cbd['tag']]
 		data = cbd['data'].strip('\0')
 		
