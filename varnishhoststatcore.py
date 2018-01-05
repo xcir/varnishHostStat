@@ -1,10 +1,12 @@
 # coding: utf-8
 
-import varnishapi,time,datetime,os,re,json
+import varnishapi,time,datetime,os,re,json,signal
 import logging,logging.handlers
 
 
 class varnishHostStat:
+	def Fini(self):
+		self.vap.Fini()
 	def __init__(self, opts):
 		#utils
 		#buf -> trx 
@@ -101,14 +103,29 @@ class varnishHostStat:
 			self.header += '-' * (205 + len(self.exstatus)* 14) + "|\n"
 		self.fieldlen  = len(self.field)
 		arg["opt"]   = vops
-		self.vap     = varnishapi.VarnishLog(**arg)
+		self.__chkUseVUT(arg)
+		if self.useVUT:
+			self.vap     = varnishapi.VarnishLogVUT(**arg)
+		else:
+			self.vap     = varnishapi.VarnishLog(**arg)
+		
+		
 		if self.vap.error:
 			print(self.vap.error)
 			exit(1)
 		self.vslutil = varnishapi.VSLUtil()
-	
 
-	def execute(self):
+	def __chkUseVUT(self, _arg):
+		arg = {}
+		if 'sopath' in _arg:
+			arg['sopath'] = _arg['sopath']
+		api = varnishapi.VarnishAPI(**arg)
+		if api.lva.apiversion >= 2.0:
+			self.useVUT = 1
+		else:
+			self.useVUT = 0
+
+	def executeVSM(self):
 		self.state=0
 		arg = {
 			'cb' : self.vapLineCallBack,
@@ -125,6 +142,23 @@ class varnishHostStat:
 				time.sleep(0.1);
 			self.vapGroupCallBack(None, None)
 
+	def executeVUT(self):
+		self.state=0
+		arg = {
+			'cb' : self.vapLineCallBack,
+			'groupcb' : self.vapGroupCallBack,
+			'maxread' : 0,
+		}
+		ret = self.vap.Dispatch(**arg)
+		while 1:
+			signal.pause()
+
+	def execute(self):
+		if self.useVUT:
+			self.executeVUT()
+		else:
+			self.executeVSM()
+		
 	def makeCmpData(self):
 		now   = int(time.time())
 		delta = int((now - self.time)/self.thr)
