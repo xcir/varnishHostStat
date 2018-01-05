@@ -25,8 +25,12 @@ class varnishHostStat:
 		self.field     = 'host: '
 		self.exstatus  = {}
 		self.header    = ''
+		self.useVUT    = 0
+		forcevsm       = 0
+		
 		vops = ['-g','request', '-I', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp:(?i)^([0-9]|https?:/|/|Start: |PipeSess: |Resp: |host: )']
 		arg = {}
+		
 		for o,a in opts:
 			if   o == '-i' and a.isdigit():
 				self.thr = int(a)
@@ -51,6 +55,8 @@ class varnishHostStat:
 				spl = a.split(',')
 				for status in spl:
 					self.exstatus[status] = 0
+			elif o == '--vsm':
+				forcevsm = 1
 			elif o == '--start':
 				start      = int(a)
 				ns         = datetime.datetime.today().second
@@ -103,7 +109,8 @@ class varnishHostStat:
 			self.header += '-' * (205 + len(self.exstatus)* 14) + "|\n"
 		self.fieldlen  = len(self.field)
 		arg["opt"]   = vops
-		self.__chkUseVUT(arg)
+		if not forcevsm:
+			self.__chkUseVUT(arg)
 		if self.useVUT:
 			self.vap     = varnishapi.VarnishLogVUT(**arg)
 		else:
@@ -122,8 +129,6 @@ class varnishHostStat:
 		api = varnishapi.VarnishAPI(**arg)
 		if api.lva.apiversion >= 2.0:
 			self.useVUT = 1
-		else:
-			self.useVUT = 0
 
 	def executeVSM(self):
 		self.state=0

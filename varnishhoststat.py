@@ -15,7 +15,7 @@ def main(opts):
 
 if __name__ == '__main__':
 	try:
-		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath=", "status="])
+		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath=", "status=", "vsm"])
 	except getopt.GetoptError:
 		print('invalid option')
 		print('usage: varnishhoststat -r -j -i [interval] -a -F [filter pattern] -R [replace pattern] -f [field name(default:host)] --status [status,status,...] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V')
