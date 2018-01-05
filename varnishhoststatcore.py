@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import varnishapi,time,datetime,os,re,json,signal
+import varnishapi,time,datetime,os,re,json,signal,math
 import logging,logging.handlers
 
 
@@ -59,7 +59,8 @@ class varnishHostStat:
 				forcevsm = 1
 			elif o == '--start':
 				start      = int(a)
-				ns         = datetime.datetime.today().second
+				today      = datetime.datetime.today()
+				ns        = today.second + today.microsecond / 1000000
 				if start > ns:
 					wait   = start - ns
 				elif start == ns:
@@ -67,8 +68,8 @@ class varnishHostStat:
 				else:
 					wait   = 60 - ns + start
 				if wait > 0:
-					self.time += wait
-					self.last += wait
+					self.time += math.ceil(wait)
+					self.last += math.ceil(wait)
 					time.sleep(wait)
 			elif o == '-F':
 				spl = a.split('@' ,2)
