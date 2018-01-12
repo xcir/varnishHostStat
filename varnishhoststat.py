@@ -4,18 +4,20 @@ import varnishhoststatcore,getopt,os,sys,syslog,traceback
 #based on Jurgen Hermanns http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
 
 def main(opts):
+	vhs = None
 	try:
 		vhs = varnishhoststatcore.varnishHostStat(opts)
 		vhs.execute()
 	except KeyboardInterrupt:
-		pass
+		if vhs:
+			vhs.Fini()
 	except Exception as e:
 		syslog.openlog(sys.argv[0], syslog.LOG_PID|syslog.LOG_PERROR, syslog.LOG_LOCAL0)
 		syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
 
 if __name__ == '__main__':
 	try:
-		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath=", "status="])
+		opts,args = getopt.getopt(sys.argv[1:],"ajrVR:F:f:i:w:DP:n:",["start=", "sopath=", "status=", "vsm"])
 	except getopt.GetoptError:
 		print('invalid option')
 		print('usage: varnishhoststat -r -j -i [interval] -a -F [filter pattern] -R [replace pattern] -f [field name(default:host)] --status [status,status,...] --start [second] --sopath [libvarnishapi.so] -w [file-name] -D -n [instance-name] -P [pid-file] -V')
