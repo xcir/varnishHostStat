@@ -28,7 +28,7 @@ class varnishHostStat:
 		self.useVUT    = 0
 		forcevsm       = 0
 		
-		vops = ['-g','request', '-I', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp:(?i)^([0-9]|https?:/|/|Start: |PipeSess: |Resp: |host: )']
+		vops = ['-g','request']
 		arg = {}
 		
 		for o,a in opts:
@@ -109,6 +109,7 @@ class varnishHostStat:
 			self.header += "\n"
 			self.header += '-' * (205 + len(self.exstatus)* 14) + "|\n"
 		self.fieldlen  = len(self.field)
+		vops+= ['-I', 'ReqAcct,BereqAcct,PipeAcct,ReqHeader,ReqURL,RespStatus,Timestamp:(?i)^([0-9]|https?:/|/|Start: |PipeSess: |Resp: |%s)' % self.field]
 		arg["opt"]   = vops
 		if not forcevsm:
 			self.__chkUseVUT(arg)
