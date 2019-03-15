@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import varnishapi,time,datetime,os,re,json,signal,math
+import varnishapi,time,datetime,os,re,json,math
 import logging,logging.handlers
 
 
@@ -157,8 +157,7 @@ class varnishHostStat:
 			'maxread' : 0,
 		}
 		ret = self.vap.Dispatch(**arg)
-		while 1:
-			signal.pause()
+		self.vap.waitSignal()
 
 	def execute(self):
 		if self.useVUT:
